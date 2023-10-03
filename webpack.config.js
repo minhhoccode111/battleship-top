@@ -11,7 +11,14 @@ module.exports = {
   devServer: {
     static: './dist',
   },
-  plugins: [new HtmlWebpackPlugin({ title: 'Website Title' })],
+  plugins: [
+    new HtmlWebpackPlugin({
+      title: "Captain's Conquest: Battleship Duel",
+      filename: 'index.html',
+      template: 'src/template.html',
+      // favicon: 'src/assets/icon',
+    }),
+  ],
   output: {
     filename: '[name].bundle.js',
     path: path.resolve(__dirname, 'dist'),
