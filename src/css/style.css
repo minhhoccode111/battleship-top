@@ -1,0 +1,18 @@
+:root {
+  font-size: 10px;
+}
+
+*,
+::before,
+::after {
+  box-sizing: border-box;
+}
+
+html {
+  background-color: black;
+}
+
+body {
+  font-size: 2rem;
+  color: white;
+}
