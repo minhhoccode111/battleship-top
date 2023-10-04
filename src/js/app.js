@@ -24,9 +24,22 @@ export const Ship = (len) => {
   };
 };
 
-export const Cell = (row, col) => {
+export const Position = (row, col) => {
   const _row = row;
   const _col = col;
+  if (row > 9 || col > 9 || row < 0 || col < 0) throw new Error('Position is not legit');
+  return {
+    get row() {
+      return _row;
+    },
+    get col() {
+      return _col;
+    },
+  };
+};
+
+export const Cell = (row, col) => {
+  const _position = Position(row, col);
   let _isReceivedAttack = false;
   let _ship = null;
 
@@ -37,14 +50,7 @@ export const Cell = (row, col) => {
 
   return {
     get position() {
-      return {
-        get row() {
-          return _row;
-        },
-        get col() {
-          return _col;
-        },
-      };
+      return _position;
     },
     get isReceivedAttack() {
       return _isReceivedAttack;
@@ -66,12 +72,25 @@ export const Cell = (row, col) => {
 };
 
 export const Gameboard = () => {
-  let _ships = [];
+  const _storeHits = [];
+  const _storeMisses = [];
+  const _ships = [];
   const _board = [];
+
   const _createBoard = () => {};
   _createBoard();
 
-  const receiveAttack = () => {};
+  const placeShips = (ship, position, isVertical) => {
+    const total = ship.length + (isVertical ? position.col : position.row);
 
-  return {};
+    // if(position.col)
+    // if(isVertical && )
+  };
+
+  const receivedAttack = (position) => {};
+
+  return {
+    receivedAttack,
+    placeShips,
+  };
 };
