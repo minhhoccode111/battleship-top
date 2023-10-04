@@ -46,6 +46,7 @@ export const Cell = (row, col) => {
   const receivedAttack = () => {
     if (_isReceivedAttack) throw new Error('Already attacked this cell');
     _isReceivedAttack = true;
+    _ship?.hit();
   };
 
   return {
@@ -74,23 +75,56 @@ export const Cell = (row, col) => {
 export const Gameboard = () => {
   const _storeHits = [];
   const _storeMisses = [];
-  const _ships = [];
+  const _storeShips = [];
+  const _SIZE = 10;
+
   const _board = [];
+  for (let i = 0; i < _SIZE; i++) {
+    _board.push([]);
+    for (let j = 0; j < _SIZE; j++) {
+      _board[i].push(Cell(i, j));
+    }
+  }
 
-  const _createBoard = () => {};
-  _createBoard();
+  const placeShips = (ship, startPosition, isVertical) => {
+    const length = ship.length;
+    _storeShips.push(ship);
 
-  const placeShips = (ship, position, isVertical) => {
-    const total = ship.length + (isVertical ? position.col : position.row);
+    const endPosition = length + (isVertical ? startPosition.col : startPosition.row); // used to check if outside the gameboard
 
-    // if(position.col)
-    // if(isVertical && )
+    if (!(typeof isVertical === 'boolean')) throw new Error('Invalid direction');
+    if (!(typeof ship === 'object')) throw new Error('Invalid ship object');
+    if (endPosition > _SIZE) throw new Error('This ship does beyond gameboard');
+
+    let { row, col } = startPosition;
+    for (let i = 0; i < length; i++) {
+      _board[row][col].ship = ship;
+      isVertical ? col++ : row++;
+    }
   };
 
-  const receivedAttack = (position) => {};
+  const receivedAttack = (position) => {
+    if (!(typeof position === 'object')) throw new Error('Invalid position');
+    const { row, col } = position;
+    const cell = _board[row][col];
+    cell.receivedAttack();
+    const status = cell.status;
+    if (status === 'Hit') _storeHits.push(position);
+    if (status === 'Miss') _storeMisses.push(position);
+    return status;
+  };
 
   return {
     receivedAttack,
     placeShips,
+    get hitShots() {
+      return _storeHits;
+    },
+    get missShots() {
+      return _storeMisses;
+    },
+    get allClear() {
+      return _storeShips.every((ship) => ship.isSunk());
+    },
   };
 };
