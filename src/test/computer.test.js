@@ -6,23 +6,23 @@ describe('test Computer factory function', () => {
     expect(typeof Computer).toBe('function');
   });
 
-  let human = Player();
-  let ai = Computer();
+  let human = new Player();
+  let ai = new Computer();
 
   beforeEach(() => {
-    human = Player();
-    ai = Computer();
+    human = new Player();
+    ai = new Computer();
   });
 
   test(`Computer should return an object`, () => {
-    expect(Computer()).toBeInstanceOf(Object);
+    expect(new Computer()).toBeInstanceOf(Computer);
     expect(typeof Computer).toBe('function');
   });
 
   test(`ai.board is defined and can be accessed from outside and created by Gameboard factory function`, () => {
     expect(ai.board).toBeDefined();
     expect(() => {
-      ai.board = Gameboard();
+      ai.board = new Gameboard();
     }).toThrow();
   });
 
@@ -39,10 +39,10 @@ describe('test Computer factory function', () => {
   });
 
   test(`ai attack and sunk human ships`, () => {
-    const ship0 = Ship(1);
-    const ship1 = Ship(1);
-    human.board.placeShips(ship0, Position(0, 0), true);
-    human.board.placeShips(ship1, Position(1, 1), true);
+    const ship0 = new Ship(1);
+    const ship1 = new Ship(1);
+    human.board.placeShips(ship0, new Position(0, 0), true);
+    human.board.placeShips(ship1, new Position(1, 1), true);
     const mock0 = jest.spyOn(ship0, 'hit');
     const mock1 = jest.spyOn(ship1, 'hit');
     while (!human.board.allClear) {

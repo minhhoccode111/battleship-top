@@ -2,12 +2,15 @@ import { Ship } from '../js/app';
 
 describe('test Ship factory function', () => {
   test('throw if encounter invalid length', () => {
-    expect(() => Ship(0)).toThrow();
-    expect(() => Ship(6)).toThrow();
+    expect(() => new Ship(0)).toThrow();
+    expect(() => new Ship(6)).toThrow();
   });
 
-  const len = 2;
-  const ship = Ship(len);
+  let ship = new Ship(2);
+
+  beforeEach(() => {
+    ship = new Ship(2);
+  });
 
   test('have length property', () => {
     expect(ship.length).toBe(2);
@@ -37,11 +40,10 @@ describe('test Ship factory function', () => {
     expect(ship.hits).toBe(2);
   });
 
-  test('ignore hit method if ship is already sunk', () => {
-    const ship = Ship(1);
+  test('throw error when trying to attack sunk ship', () => {
+    const ship = new Ship(1);
     ship.hit();
-    ship.hit();
-    ship.hit();
+    expect(() => ship.hit()).toThrow();
     expect(ship.hits).toBe(1); // 1 instead of 3
   });
 
@@ -51,12 +53,12 @@ describe('test Ship factory function', () => {
   });
 
   test('isSunk actually change', () => {
-    const ship = Ship(2);
+    const ship = new Ship(2);
     ship.hit();
     expect(ship.hits).toBe(1);
-    expect(ship.isSunk()).toBeFalsy();
+    expect(ship.isSunk()).toBe(false);
     ship.hit();
     expect(ship.hits).toBe(2);
-    expect(ship.isSunk()).toBeTruthy();
+    expect(ship.isSunk()).toBe(true);
   });
 });

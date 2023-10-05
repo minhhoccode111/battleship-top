@@ -1,172 +1,192 @@
 console.log('Hello, World! From app.js');
 
-export const Ship = (len) => {
-  if (len > 5 || len < 1) throw new Error('Invalid ship length');
+export class Ship {
+  constructor(len) {
+    if (len > 5 || len < 1) throw new Error('Invalid ship length');
+    let _hits = 0;
 
-  let _length = len;
-  let _hits = 0;
+    this.isSunk = () => {
+      return this.length - _hits < 1;
+    };
 
-  const hit = () => {
-    if (_hits === _length) return; // ignore if is sunk already
-    _hits++;
-  };
+    this.hit = () => {
+      if (this.isSunk()) throw new Error(`Can't attack sunk ship`);
+      _hits++;
+    };
 
-  const isSunk = () => _length - _hits < 1;
-
-  return {
-    // getter so that these properties read-only
-    get length() {
-      return _length;
-    },
-    get hits() {
-      return _hits;
-    },
-    hit,
-    isSunk,
-  };
-};
-
-export const Position = (row, col) => {
-  const _row = row;
-  const _col = col;
-  if (row > 9 || col > 9 || row < 0 || col < 0) throw new Error('Position is not legit');
-  return {
-    get row() {
-      return _row;
-    },
-    get col() {
-      return _col;
-    },
-  };
-};
-
-export const Cell = (row, col) => {
-  const _position = Position(row, col);
-  let _isReceivedAttack = false;
-  let _ship = null;
-
-  const receivedAttack = () => {
-    if (_isReceivedAttack) throw new Error('Already attacked this cell');
-    _isReceivedAttack = true;
-    _ship?.hit();
-  };
-
-  return {
-    get position() {
-      return _position;
-    },
-    get isReceivedAttack() {
-      return _isReceivedAttack;
-    },
-    get ship() {
-      return _ship;
-    },
-    set ship(newShip) {
-      if (_ship) throw new Error('Already placed a ship on this cell');
-      _ship = newShip;
-    },
-    get status() {
-      if (!_isReceivedAttack) return 'Not yet'; // if is not yet received attack
-      if (_ship) return 'Hit'; // if received attack and contains a ship
-      return 'Miss'; // else
-    },
-    receivedAttack,
-  };
-};
-
-export const Gameboard = () => {
-  const _storeHits = [];
-  const _storeMisses = [];
-  const _storeShips = [];
-  const _SIZE = 10;
-
-  const _board = [];
-  for (let i = 0; i < _SIZE; i++) {
-    _board.push([]);
-    for (let j = 0; j < _SIZE; j++) {
-      _board[i].push(Cell(i, j));
-    }
+    Object.defineProperties(this, {
+      length: {
+        value: len,
+      },
+      hits: {
+        get() {
+          return _hits;
+        },
+      },
+    });
   }
+}
 
-  const placeShips = (ship, startPosition, isVertical) => {
-    if (typeof ship !== 'object') throw new Error('Invalid ship object');
-    if (typeof isVertical !== 'boolean') throw new Error('Invalid direction');
+export class Position {
+  constructor(row, col) {
+    if (row > 9 || col > 9 || row < 0 || col < 0) throw new Error('Position is not legit');
 
-    const length = ship.length;
-    _storeShips.push(ship);
+    Object.defineProperties(this, {
+      row: {
+        get() {
+          return row;
+        },
+      },
+      col: {
+        get() {
+          return col;
+        },
+      },
+    });
+  }
+}
 
-    const endPosition = length + (isVertical ? startPosition.col : startPosition.row); // used to check if outside the gameboard
+export class Cell {
+  constructor(row, col) {
+    let _isReceivedAttack = false;
+    let _ship = null;
 
-    if (endPosition > _SIZE) throw new Error('This ship does beyond gameboard');
+    this.receivedAttack = function () {
+      if (_isReceivedAttack) throw new Error('Already attacked this cell');
+      _isReceivedAttack = true;
+      _ship?.hit();
+    };
 
-    let { row, col } = startPosition;
-    for (let i = 0; i < length; i++) {
-      _board[row][col].ship = ship;
-      isVertical ? col++ : row++;
+    Object.defineProperties(this, {
+      position: {
+        value: new Position(row, col),
+      },
+      isReceivedAttack: {
+        get() {
+          return _isReceivedAttack;
+        },
+      },
+      ship: {
+        get() {
+          return _ship;
+        },
+        set(newShip) {
+          if (_ship) throw new Error('Already placed a ship on this cell');
+          _ship = newShip;
+        },
+      },
+      status: {
+        get() {
+          if (!_isReceivedAttack) return 'Not yet'; // if is not yet received attack
+          if (_ship) return 'Hit'; // if received attack and contains a ship
+          return 'Miss'; // else
+        },
+      },
+    });
+  }
+}
+
+export class Gameboard {
+  constructor() {
+    const _storeHits = [];
+    const _storeMisses = [];
+    const _storeShips = [];
+    const _SIZE = 10;
+
+    const _board = [];
+    for (let i = 0; i < _SIZE; i++) {
+      _board.push([]);
+      for (let j = 0; j < _SIZE; j++) {
+        _board[i].push(new Cell(i, j));
+      }
     }
-  };
 
-  const receivedAttack = (position) => {
-    if (typeof position !== 'object') throw new Error('Invalid position');
-    const { row, col } = position;
-    const cell = _board[row][col];
-    cell.receivedAttack();
-    const status = cell.status;
-    if (status === 'Hit') _storeHits.push(position);
-    if (status === 'Miss') _storeMisses.push(position);
-    return status;
-  };
+    this.placeShips = (ship, startPosition, isVertical) => {
+      if (!(ship instanceof Ship)) throw new Error('Invalid ship object');
+      if (typeof isVertical !== 'boolean') throw new Error('Invalid direction');
 
-  return {
-    receivedAttack,
-    placeShips,
-    get hitShots() {
-      return _storeHits;
-    },
-    get missShots() {
-      return _storeMisses;
-    },
-    get allClear() {
-      return _storeShips.every((ship) => ship.isSunk());
-    },
-  };
-};
+      const length = ship.length;
+      _storeShips.push(ship);
 
-export const Player = () => {
-  const _board = Gameboard();
+      const endPosition = length + (isVertical ? startPosition.col : startPosition.row); // used to check if outside the gameboard
 
-  const attack = (position, board) => {
-    if (typeof position !== 'object' || typeof board !== 'object') throw new Error('Invalid arguments');
+      if (endPosition > _SIZE) throw new Error('This ship does beyond gameboard');
 
-    const status = board.receivedAttack(position);
-    return status;
-  };
+      let { row, col } = startPosition;
+      for (let i = 0; i < length; i++) {
+        _board[row][col].ship = ship;
+        isVertical ? col++ : row++;
+      }
+    };
 
-  return {
-    get board() {
-      return _board;
-    },
-    attack,
-  };
-};
+    this.receivedAttack = (position) => {
+      if (!(position instanceof Position)) throw new Error('Invalid position');
+      const { row, col } = position;
+      const cell = _board[row][col];
+      cell.receivedAttack();
+      const status = cell.status;
+      if (status === 'Hit') _storeHits.push(position);
+      if (status === 'Miss') _storeMisses.push(position);
+      return status;
+    };
 
-export const Computer = () => {
-  const _board = Gameboard();
+    Object.defineProperties(this, {
+      hitShots: {
+        get() {
+          return _storeHits;
+        },
+      },
+      missShots: {
+        get() {
+          return _storeMisses;
+        },
+      },
+      allClear: {
+        get() {
+          return _storeShips.every((ship) => ship.isSunk());
+        },
+      },
+    });
+  }
+}
 
-  const attack = (board) => {
-    if (typeof board !== 'object') {
-      throw new Error('Invalid board');
-    }
-    const row = Math.floor(Math.random() * 10);
-    const col = Math.floor(Math.random() * 10);
-    const status = board.receivedAttack(Position(row, col));
-    return status;
-  };
+export class Player {
+  constructor() {
+    const _board = new Gameboard();
+    this.attack = (position, board) => {
+      if (!(position instanceof Position) || !(board instanceof Gameboard)) throw new Error('Invalid arguments');
 
-  return {
-    get board() {
-      return _board;
-    },
-    attack,
-  };
-};
+      const status = board.receivedAttack(position);
+      return status;
+    };
+
+    Object.defineProperties(this, {
+      board: {
+        get() {
+          return _board;
+        },
+      },
+    });
+  }
+}
+
+export class Computer {
+  constructor() {
+    const _board = new Gameboard();
+    this.attack = (board) => {
+      if (!(board instanceof Gameboard)) throw new Error('Invalid board');
+      const row = Math.floor(Math.random() * 10);
+      const col = Math.floor(Math.random() * 10);
+      const status = board.receivedAttack(new Position(row, col));
+      return status;
+    };
+
+    Object.defineProperties(this, {
+      board: {
+        get() {
+          return _board;
+        },
+      },
+    });
+  }
+}

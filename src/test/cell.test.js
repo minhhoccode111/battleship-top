@@ -1,13 +1,12 @@
-import { Cell } from './../js/app';
-import { Ship } from './../js/app';
+import { Cell, Ship } from './../js/app';
 
 describe('test Cell factory function', () => {
-  let cell = Cell(1, 2);
-  let ship = Ship(2);
+  let cell = new Cell(1, 2);
+  let ship = new Ship(2);
 
   beforeEach(() => {
-    cell = Cell(1, 2); // re-create cell after each test
-    ship = Ship(2);
+    cell = new Cell(1, 2); // re-create cell after each test
+    ship = new Ship(2);
   });
 
   test('cell has coordinates respectively', () => {
@@ -58,7 +57,7 @@ describe('test Cell factory function', () => {
     cell.ship = ship;
     expect(() => {
       const anotherLength = 3;
-      const anotherShip = Ship(anotherLength);
+      const anotherShip = new Ship(anotherLength);
       cell.ship = anotherShip;
     }).toThrow();
   });

@@ -1,7 +1,7 @@
 import { Position } from '../js/app';
 
 describe('test Position factory function', () => {
-  const position = Position(1, 2);
+  const position = new Position(1, 2);
 
   test('factory function takes 2 argument row and col', () => {
     expect(Position.length).toBe(2);
@@ -9,7 +9,7 @@ describe('test Position factory function', () => {
   });
 
   test('return an object which has row and col properties', () => {
-    expect(position).toBeInstanceOf(Object);
+    expect(position).toBeInstanceOf(Position);
     expect(position.row).toBeDefined();
     expect(position.col).toBeDefined();
   });
@@ -21,10 +21,10 @@ describe('test Position factory function', () => {
 
   test('throw error if try to create a position outside gameboard', () => {
     expect(() => {
-      const position = Position(11, 1);
+      const position = new Position(11, 1);
     }).toThrow();
     expect(() => {
-      const position = Position(1, 11);
+      const position = new Position(1, 11);
     }).toThrow();
   });
 });
