@@ -1,7 +1,7 @@
+import { Ship } from '../js/app';
 import { Player } from '../js/app';
 import { Position } from '../js/app';
 import { Gameboard } from '../js/app';
-import { Ship } from '../js/app';
 
 describe('test Player factory function', () => {
   test('Player should be defined', () => {
@@ -11,6 +11,7 @@ describe('test Player factory function', () => {
 
   let human;
   let ai;
+
   beforeEach(() => {
     human = Player();
     ai = Player();

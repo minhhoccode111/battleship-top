@@ -149,3 +149,24 @@ export const Player = () => {
     attack,
   };
 };
+
+export const Computer = () => {
+  const _board = Gameboard();
+
+  const attack = (board) => {
+    if (typeof board !== 'object') {
+      throw new Error('Invalid board');
+    }
+    const row = Math.floor(Math.random() * 10);
+    const col = Math.floor(Math.random() * 10);
+    const status = board.receivedAttack(Position(row, col));
+    return status;
+  };
+
+  return {
+    get board() {
+      return _board;
+    },
+    attack,
+  };
+};
