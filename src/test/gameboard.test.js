@@ -2,8 +2,6 @@ import { Gameboard } from '../js/app';
 import { Ship } from '../js/app';
 import { Position } from '../js/app';
 
-// const jest = require('jest');
-
 describe('test Gameboard factory function', () => {
   let ship;
   let gameboard;

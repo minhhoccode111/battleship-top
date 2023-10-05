@@ -1,6 +1,8 @@
 console.log('Hello, World! From app.js');
 
 export const Ship = (len) => {
+  if (len > 5 || len < 1) throw new Error('Invalid ship length');
+
   let _length = len;
   let _hits = 0;
 
@@ -87,13 +89,14 @@ export const Gameboard = () => {
   }
 
   const placeShips = (ship, startPosition, isVertical) => {
+    if (typeof ship !== 'object') throw new Error('Invalid ship object');
+    if (typeof isVertical !== 'boolean') throw new Error('Invalid direction');
+
     const length = ship.length;
     _storeShips.push(ship);
 
     const endPosition = length + (isVertical ? startPosition.col : startPosition.row); // used to check if outside the gameboard
 
-    if (!(typeof isVertical === 'boolean')) throw new Error('Invalid direction');
-    if (!(typeof ship === 'object')) throw new Error('Invalid ship object');
     if (endPosition > _SIZE) throw new Error('This ship does beyond gameboard');
 
     let { row, col } = startPosition;
@@ -104,7 +107,7 @@ export const Gameboard = () => {
   };
 
   const receivedAttack = (position) => {
-    if (!(typeof position === 'object')) throw new Error('Invalid position');
+    if (typeof position !== 'object') throw new Error('Invalid position');
     const { row, col } = position;
     const cell = _board[row][col];
     cell.receivedAttack();
@@ -126,5 +129,23 @@ export const Gameboard = () => {
     get allClear() {
       return _storeShips.every((ship) => ship.isSunk());
     },
+  };
+};
+
+export const Player = () => {
+  const _board = Gameboard();
+
+  const attack = (position, board) => {
+    if (typeof position !== 'object' || typeof board !== 'object') throw new Error('Invalid arguments');
+
+    const status = board.receivedAttack(position);
+    return status;
+  };
+
+  return {
+    get board() {
+      return _board;
+    },
+    attack,
   };
 };

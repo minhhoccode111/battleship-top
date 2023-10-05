@@ -1,6 +1,11 @@
 import { Ship } from '../js/app';
 
 describe('test Ship factory function', () => {
+  test('throw if encounter invalid length', () => {
+    expect(() => Ship(0)).toThrow();
+    expect(() => Ship(6)).toThrow();
+  });
+
   const len = 2;
   const ship = Ship(len);
 
