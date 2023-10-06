@@ -1,22 +1,22 @@
-import { Ship, Player, Position, Gameboard } from '../js/app';
+import { Ship, Human, Position, Gameboard } from '../js/app';
 
-describe('test Player factory function', () => {
-  test('Player should be defined', () => {
-    expect(Player).toBeDefined();
-    expect(typeof Player).toBe('function');
+describe('test Human factory function', () => {
+  test('Human should be defined', () => {
+    expect(Human).toBeDefined();
+    expect(typeof Human).toBe('function');
   });
 
   let human;
   let ai;
 
   beforeEach(() => {
-    human = new Player();
-    ai = new Player();
+    human = new Human();
+    ai = new Human();
   });
 
-  test('Player factory should return an object', () => {
-    expect(human).toBeInstanceOf(Player);
-    expect(ai).toBeInstanceOf(Player);
+  test('Human factory should return an object', () => {
+    expect(human).toBeInstanceOf(Human);
+    expect(ai).toBeInstanceOf(Human);
   });
 
   test('player.board is defined and can be access from outside and created by Gameboard factory function', () => {

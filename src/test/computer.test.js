@@ -1,4 +1,4 @@
-import { Computer, Ship, Player, Gameboard, Position } from '../js/app';
+import { Computer, Ship, Human, Gameboard, Position } from '../js/app';
 
 describe('test Computer factory function', () => {
   test('Computer to be defined', () => {
@@ -6,11 +6,11 @@ describe('test Computer factory function', () => {
     expect(typeof Computer).toBe('function');
   });
 
-  let human = new Player();
+  let human = new Human();
   let ai = new Computer();
 
   beforeEach(() => {
-    human = new Player();
+    human = new Human();
     ai = new Computer();
   });
 
@@ -53,5 +53,41 @@ describe('test Computer factory function', () => {
     console.table(human.board.shots.length);
     console.table(human.board.hitShots.length);
     console.table(human.board.missShots.length);
+  });
+});
+
+describe(`test randomPlaceShips method of Player class`, () => {
+  xtest(`human will random place ships and ai will random attack until every ship is sunk`, () => {
+    // this test passed, i skip it for performance
+    const human = new Human();
+    const ai = new Computer();
+
+    expect(() => human.randomPlaceShips()).not.toThrow(); // place 9 ships random with length [1, 1, 1, 2, 2, 3, 3, 4, 5]
+    expect(human.board.ships.length).toBe(9);
+    const ships = human.board.ships;
+    const mock0 = jest.spyOn(ships[0], 'hit');
+    const mock1 = jest.spyOn(ships[1], 'hit');
+    const mock2 = jest.spyOn(ships[2], 'hit');
+    const mock3 = jest.spyOn(ships[3], 'hit');
+    const mock4 = jest.spyOn(ships[4], 'hit');
+    const mock5 = jest.spyOn(ships[5], 'hit');
+    const mock6 = jest.spyOn(ships[6], 'hit');
+    const mock7 = jest.spyOn(ships[7], 'hit');
+    const mock8 = jest.spyOn(ships[8], 'hit');
+    // ai try to sunk all ships of human
+    while (!human.board.allClear) {
+      try {
+        ai.attack(human);
+      } catch (err) {}
+    }
+    expect(mock0).toBeCalledTimes(1);
+    expect(mock1).toBeCalledTimes(1);
+    expect(mock2).toBeCalledTimes(1);
+    expect(mock3).toBeCalledTimes(2);
+    expect(mock4).toBeCalledTimes(2);
+    expect(mock5).toBeCalledTimes(3);
+    expect(mock6).toBeCalledTimes(3);
+    expect(mock7).toBeCalledTimes(4);
+    expect(mock8).toBeCalledTimes(5);
   });
 });

@@ -1,4 +1,5 @@
-import { Ship, Position, Cell, Gameboard, Player, Computer } from './../js/app';
+import { Ship, Position, Cell, Gameboard, Human, Computer } from './../js/app';
+import { randomPlaceShips } from './../js/app';
 
 describe('test Gameboard factory function', () => {
   test('', () => {

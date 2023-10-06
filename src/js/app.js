@@ -102,8 +102,6 @@ export class Cell {
 
 export class Gameboard {
   constructor() {
-    const _storeShips = [];
-
     const _board = [];
 
     for (let i = 0; i < _SIZE; i++) {
@@ -121,8 +119,6 @@ export class Gameboard {
 
       const length = ship.length;
 
-      _storeShips.push(ship);
-
       const endPosition = length + (isVertical ? startPosition.col : startPosition.row); // used to check if outside the gameboard
 
       if (endPosition > _SIZE) throw new Error('This ship does beyond gameboard');
@@ -134,6 +130,8 @@ export class Gameboard {
 
         isVertical ? col++ : row++; // increase based on direction
       }
+
+      this.ships.push(ship);
     };
 
     this.receivedAttack = (position) => {
@@ -157,6 +155,8 @@ export class Gameboard {
     };
 
     Object.defineProperties(this, {
+      ships: { value: [] },
+
       hitShots: { value: [] },
 
       missShots: { value: [] },
@@ -165,15 +165,48 @@ export class Gameboard {
 
       allClear: {
         get() {
-          return _storeShips.every((ship) => ship.isSunk());
+          return this.ships.every((ship) => ship.isSunk());
         },
       },
     });
   }
 }
 
-export class Player {
+class Player {
   constructor() {
+    Object.defineProperties(this, {
+      board: {
+        value: new Gameboard(),
+      },
+    });
+  }
+  randomPlaceShips() {
+    const lengths = [1, 1, 1, 2, 2, 3, 3, 4, 5];
+
+    for (let i = 0; i < lengths.length; i++) {
+      try {
+        const row = Math.floor(Math.random() * _SIZE);
+
+        const col = Math.floor(Math.random() * _SIZE);
+
+        const position = new Position(row, col);
+
+        const direction = !!Math.floor(Math.random() * 2);
+
+        const ship = new Ship(lengths[i]);
+
+        this.board.placeShips(ship, position, direction);
+      } catch (error) {
+        i--;
+      }
+    }
+  }
+}
+
+export class Human extends Player {
+  constructor() {
+    super();
+
     this.attack = (position, player) => {
       if (!(position instanceof Position) || !(player.board instanceof Gameboard)) throw new Error('Invalid arguments');
 
@@ -181,17 +214,13 @@ export class Player {
 
       return status;
     };
-
-    Object.defineProperties(this, {
-      board: {
-        value: new Gameboard(),
-      },
-    });
   }
 }
 
-export class Computer {
+export class Computer extends Player {
   constructor() {
+    super();
+
     this.attack = (player) => {
       if (!(player.board instanceof Gameboard)) throw new Error('Invalid board');
 
@@ -209,15 +238,19 @@ export class Computer {
         } catch (err) {}
       }
     };
-
-    Object.defineProperties(this, {
-      board: {
-        value: new Gameboard(),
-      },
-    });
   }
 }
 
+export class Display {
+  static human(board) {}
+
+  static ai(board) {}
+}
+
 export const Game = (() => {
+  const human = new Player();
+
+  const ai = new Computer();
+
   return {};
 })();
