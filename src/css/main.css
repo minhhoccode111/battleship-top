@@ -17,12 +17,41 @@
   white-space: nowrap;
 }
 .gameboard {
-  /* border: 1px solid red; */
+  border: 1px solid red;
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  grid-template-rows: repeat(10, 1fr);
+  gap: 1px;
   width: calc(50vw - 1rem);
   height: calc(50vw - 1rem);
   max-width: 50rem;
   max-height: 50rem;
   background: url('./../assets/img/battleship.png') center/cover no-repeat red;
+}
+
+.gameboard > div {
+  /* margin: 1px; */
+  border: 1px solid red;
+}
+
+.gameboard > .contain__ship {
+  background-color: black;
+}
+
+.gameboard > div > span {
+  display: block;
+  height: 1rem;
+  width: 1rem;
+  background-color: #060606;
+  border-radius: 99rem;
+}
+
+.gameboard > div > .contain__ship__hit {
+  background-color: red;
+}
+
+.gameboard > div > .contain__ship__miss {
+  background-color: green;
 }
 
 .gameboard[data-ai] {

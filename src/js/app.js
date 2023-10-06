@@ -102,60 +102,12 @@ export class Cell {
 
 export class Gameboard {
   constructor() {
-    const _board = [];
-
-    for (let i = 0; i < _SIZE; i++) {
-      _board.push([]);
-
-      for (let j = 0; j < _SIZE; j++) {
-        _board[i].push(new Cell(i, j));
-      }
-    }
-
-    this.placeShips = (ship, startPosition, isVertical) => {
-      if (!(ship instanceof Ship)) throw new Error('Invalid ship object');
-
-      if (typeof isVertical !== 'boolean') throw new Error('Invalid direction');
-
-      const length = ship.length;
-
-      const endPosition = length + (isVertical ? startPosition.col : startPosition.row); // used to check if outside the gameboard
-
-      if (endPosition > _SIZE) throw new Error('This ship does beyond gameboard');
-
-      let { row, col } = startPosition;
-
-      for (let i = 0; i < length; i++) {
-        _board[row][col].ship = ship;
-
-        isVertical ? col++ : row++; // increase based on direction
-      }
-
-      this.ships.push(ship);
-    };
-
-    this.receivedAttack = (position) => {
-      if (!(position instanceof Position)) throw new Error('Invalid position');
-
-      const { row, col } = position;
-
-      const cell = _board[row][col];
-
-      cell.receivedAttack();
-
-      const status = cell.status;
-
-      if (status === 'Hit') this.hitShots.push(position);
-
-      if (status === 'Miss') this.missShots.push(position);
-
-      this.shots.push(position);
-
-      return status;
-    };
-
     Object.defineProperties(this, {
       ships: { value: [] },
+
+      shipsInfo: { value: [] },
+
+      board: { value: [] },
 
       hitShots: { value: [] },
 
@@ -169,17 +121,82 @@ export class Gameboard {
         },
       },
     });
+
+    for (let i = 0; i < _SIZE; i++) {
+      this.board.push([]);
+
+      for (let j = 0; j < _SIZE; j++) {
+        this.board[i].push(new Cell(i, j));
+      }
+    }
+
+    this.placeShips = (ship, startPosition, isVertical) => {
+      if (!(ship instanceof Ship)) throw new Error('Invalid ship object');
+
+      if (typeof isVertical !== 'boolean') throw new Error('Invalid direction');
+
+      const length = ship.length;
+
+      const endPosition = length + (isVertical ? startPosition.col : startPosition.row); // used to check if outside the gameboard
+
+      if (endPosition > _SIZE) throw new Error('This ship goes beyond gameboard');
+
+      let { row, col } = startPosition;
+
+      const locations = [];
+
+      for (let i = 0; i < length; i++) {
+        this.board[row][col].ship = ship;
+
+        locations.push(new Position(row, col));
+
+        isVertical ? col++ : row++; // increase based on direction
+      }
+
+      this.shipsInfo.push({ locations, isVertical, ship: ship });
+
+      this.ships.push(ship);
+    };
+
+    this.receivedAttack = (position) => {
+      if (!(position instanceof Position)) throw new Error('Invalid position');
+
+      const { row, col } = position;
+
+      const cell = this.board[row][col];
+
+      cell.receivedAttack();
+
+      const status = cell.status;
+
+      if (status === 'Hit') this.hitShots.push(position);
+
+      if (status === 'Miss') this.missShots.push(position);
+
+      this.shots.push(position);
+
+      return status;
+    };
   }
 }
 
 class Player {
   constructor() {
+    let _board = new Gameboard();
+
+    this.resetBoard = () => {
+      _board = new Gameboard();
+    };
+
     Object.defineProperties(this, {
       board: {
-        value: new Gameboard(),
+        get() {
+          return _board;
+        },
       },
     });
   }
+
   randomPlaceShips() {
     const lengths = [1, 1, 1, 2, 2, 3, 3, 4, 5];
 
@@ -232,25 +249,13 @@ export class Computer extends Player {
         const col = Math.floor(Math.random() * _SIZE);
 
         try {
-          const status = player.board.receivedAttack(new Position(row, col));
+          const position = new Position(row, col);
 
-          return status;
+          const status = player.board.receivedAttack(position);
+
+          return { status, position };
         } catch (err) {}
       }
     };
   }
 }
-
-export class Display {
-  static human(board) {}
-
-  static ai(board) {}
-}
-
-export const Game = (() => {
-  const human = new Player();
-
-  const ai = new Computer();
-
-  return {};
-})();

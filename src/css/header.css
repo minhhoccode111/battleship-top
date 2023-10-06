@@ -14,6 +14,11 @@
   height: 100%;
   border-radius: 99rem;
   width: 6rem;
+  animation: rotate 750ms linear 0ms infinite;
+  cursor: crosshair;
+}
+.header__icon:hover {
+  animation: none;
 }
 .header__title__ctn {
 }
@@ -26,4 +31,12 @@
 }
 .header__link {
   white-space: nowrap;
+}
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(359deg);
+  }
 }

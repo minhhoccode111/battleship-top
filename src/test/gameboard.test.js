@@ -1,4 +1,4 @@
-import { Gameboard, Ship, Position } from '../js/app';
+import { Gameboard, Ship, Position, Human, Computer } from '../js/app';
 
 describe('test Gameboard factory function', () => {
   let ship;
@@ -133,5 +133,41 @@ describe('test Gameboard factory function', () => {
     gameboard.receivedAttack(new Position(3, 3));
     expect(gameboard.allClear).toBe(true);
     expect(gameboard.shots.length).toBe(3);
+  });
+
+  describe(`gameboard can access the board array`, () => {
+    test(`access board array`, () => {
+      const gameboard = new Gameboard();
+      expect(Array.isArray(gameboard.board)).toBe(true);
+      expect(gameboard.board.length).toBe(10);
+      expect(gameboard.board[3].length).toBe(10);
+      expect(gameboard.board[5].length).toBe(10);
+      expect(gameboard.board[7].length).toBe(10);
+      expect(gameboard.board[9].length).toBe(10);
+    });
+  });
+
+  describe(`shipsLocations method`, () => {
+    const human = new Human();
+    const ship = new Ship(5);
+    human.board.placeShips(ship, new Position(1, 1), false);
+    test(`human.board.shipsInfo`, () => {
+      expect(Array.isArray(human.board.shipsInfo)).toBe(true);
+      expect(human.board.shipsInfo[0] instanceof Object).toBe(true);
+    });
+
+    test(`human.board.shipsInfo[0].locations`, () => {
+      expect(Array.isArray(human.board.shipsInfo[0].locations)).toBe(true);
+      expect(human.board.shipsInfo[0].locations.every((location) => location instanceof Position)).toBe(true);
+      expect(human.board.shipsInfo[0].locations.length).toBe(5);
+    });
+
+    test(`human.board.shipsInfo[0].ship`, () => {
+      expect(human.board.shipsInfo[0].ship instanceof Ship).toBe(true);
+    });
+
+    test(`human.board.shipsInfo[0].isVertical`, () => {
+      expect(human.board.shipsInfo[0].isVertical).toBe(false);
+    });
   });
 });
