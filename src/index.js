@@ -1,5 +1,3 @@
-console.log('Hello, World! From index.js');
-
 import './css/nav.css';
 import './css/main.css';
 import './css/aside.css';

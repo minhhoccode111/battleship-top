@@ -30,12 +30,8 @@ describe('test Computer factory function', () => {
     expect(ai.attack).toBeDefined();
     expect(typeof ai.attack).toBe('function');
     expect(ai.attack.length).toBe(1);
-    expect(() => {
-      ai.attack('a');
-    }).toThrow();
-    expect(() => {
-      ai.attack(human.board);
-    }).not.toThrow();
+    expect(() => ai.attack('a')).toThrow();
+    expect(() => ai.attack(human)).not.toThrow();
   });
 
   test(`ai attack and sunk human ships`, () => {
@@ -47,10 +43,8 @@ describe('test Computer factory function', () => {
     const mock1 = jest.spyOn(ship1, 'hit');
     while (!human.board.allClear) {
       try {
-        ai.attack(human.board);
-      } catch (error) {
-        console.log(error);
-      }
+        ai.attack(human);
+      } catch (err) {}
     }
     expect(mock0).toBeCalledTimes(1);
     expect(mock1).toBeCalledTimes(1);

@@ -81,6 +81,7 @@ describe('test Gameboard factory function', () => {
     expect(mock).toHaveBeenCalledTimes(2);
     expect(ship.hits).toBe(2);
     expect(ship.isSunk()).toBe(true);
+    expect(gameboard.shots.length).toBe(3);
   });
 
   describe('records the coordinates which have received attack', () => {
@@ -131,5 +132,6 @@ describe('test Gameboard factory function', () => {
     expect(gameboard.allClear).toBe(false);
     gameboard.receivedAttack(new Position(3, 3));
     expect(gameboard.allClear).toBe(true);
+    expect(gameboard.shots.length).toBe(3);
   });
 });

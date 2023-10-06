@@ -28,10 +28,10 @@ describe('test Player factory function', () => {
     expect(human.attack).toBeDefined();
     expect(typeof human.attack).toBe('function');
     expect(ai.attack.length).toBe(2);
-    expect(() => human.attack('a', ai.board)).toThrow();
-    expect(() => human.attack(new Position(-1, 1), ai.board)).toThrow();
+    expect(() => human.attack('a', ai)).toThrow();
+    expect(() => human.attack(new Position(-1, 1), ai)).toThrow();
     expect(() => human.attack(new Position(1, 1), 'a')).toThrow();
-    expect(() => human.attack(new Position(1, 1), ai.board)).not.toThrow();
+    expect(() => human.attack(new Position(1, 1), ai)).not.toThrow();
   });
 
   test('human attack and sunk enemy ships manually', () => {
@@ -40,10 +40,10 @@ describe('test Player factory function', () => {
     ai.board.placeShips(ship0, new Position(1, 1), true);
     ai.board.placeShips(ship1, new Position(1, 2), true);
     expect(ai.board.allClear).toBe(false);
-    expect(human.attack(new Position(1, 1), ai.board)).toBe('Hit');
+    expect(human.attack(new Position(1, 1), ai)).toBe('Hit');
     expect(ai.board.allClear).toBe(false);
-    expect(human.attack(new Position(1, 2), ai.board)).toBe('Hit');
+    expect(human.attack(new Position(1, 2), ai)).toBe('Hit');
     expect(ai.board.allClear).toBe(true);
-    expect(() => human.attack(new Position(1, 1), ai.board)).toThrow(); // attack twice
+    expect(() => human.attack(new Position(1, 1), ai)).toThrow(); // attack twice
   });
 });
