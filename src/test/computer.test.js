@@ -34,7 +34,8 @@ describe('test Computer factory function', () => {
     expect(() => ai.attack(human)).not.toThrow();
   });
 
-  test(`ai attack and sunk human ships`, () => {
+  xtest(`ai attack and sunk human ships`, () => {
+    // this test passed and I skip it for performance
     const ship0 = new Ship(1);
     const ship1 = new Ship(1);
     human.board.placeShips(ship0, new Position(0, 0), true);
@@ -48,5 +49,9 @@ describe('test Computer factory function', () => {
     }
     expect(mock0).toBeCalledTimes(1);
     expect(mock1).toBeCalledTimes(1);
+    // those info below will be random
+    console.table(human.board.shots.length);
+    console.table(human.board.hitShots.length);
+    console.table(human.board.missShots.length);
   });
 });

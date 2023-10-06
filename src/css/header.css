@@ -1,0 +1,29 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.header__icon__ctn {
+  align-self: stretch;
+}
+.header__icon {
+  background: url('./../assets/icon/aim.svg') center/contain no-repeat red;
+  height: 100%;
+  border-radius: 99rem;
+  width: 6rem;
+}
+.header__title__ctn {
+}
+.header__title {
+  font-size: 6rem;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.header__link__ctn {
+}
+.header__link {
+  white-space: nowrap;
+}

@@ -217,3 +217,7 @@ export class Computer {
     });
   }
 }
+
+export const Game = (() => {
+  return {};
+})();
