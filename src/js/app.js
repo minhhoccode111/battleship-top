@@ -4,18 +4,6 @@ export class Ship {
   constructor(len) {
     if (len > 5 || len < 1) throw new Error('Invalid ship length');
 
-    let _hits = 0;
-
-    this.isSunk = () => {
-      return this.length - _hits < 1;
-    };
-
-    this.hit = () => {
-      if (this.isSunk()) throw new Error(`Can't attack sunk ship`);
-
-      _hits++;
-    };
-
     Object.defineProperties(this, {
       length: {
         value: len,
@@ -26,7 +14,20 @@ export class Ship {
           return _hits;
         },
       },
+      isSunk: {
+        get() {
+          return this.length - _hits < 1;
+        },
+      },
     });
+
+    let _hits = 0;
+
+    this.hit = () => {
+      if (this.isSunk) throw new Error(`Can't attack sunk ship`);
+
+      _hits++;
+    };
   }
 }
 
@@ -103,8 +104,6 @@ export class Cell {
 export class Gameboard {
   constructor() {
     Object.defineProperties(this, {
-      ships: { value: [] },
-
       shipsInfo: { value: [] },
 
       board: { value: [] },
@@ -117,7 +116,31 @@ export class Gameboard {
 
       allClear: {
         get() {
-          return this.ships.every((ship) => ship.isSunk());
+          return this.shipsInfo.every((info) => info.ship.isSunk);
+        },
+      },
+
+      ships: {
+        get() {
+          // place ships into category base on their status: healthy, warning, death
+          return this.shipsInfo.reduce(
+            (total, currentShipInfo) => {
+              let shipStatus;
+
+              const currentShip = currentShipInfo.ship;
+
+              const shipHealth = currentShip.length - currentShip.hits;
+
+              if (shipHealth === 0) shipStatus = 'death';
+              else if (shipHealth === 1) shipStatus = 'warning';
+              else shipStatus = 'healthy';
+
+              total[shipStatus].push(currentShipInfo);
+
+              return total;
+            },
+            { healthy: [], death: [], warning: [] }
+          );
         },
       },
     });
@@ -154,8 +177,6 @@ export class Gameboard {
       }
 
       this.shipsInfo.push({ locations, isVertical, ship: ship });
-
-      this.ships.push(ship);
     };
 
     this.receivedAttack = (position) => {
@@ -183,10 +204,6 @@ export class Gameboard {
 class Player {
   constructor() {
     let _board = new Gameboard();
-
-    this.resetBoard = () => {
-      _board = new Gameboard();
-    };
 
     Object.defineProperties(this, {
       board: {

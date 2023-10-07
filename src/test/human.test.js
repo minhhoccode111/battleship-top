@@ -47,14 +47,3 @@ describe('test Human factory function', () => {
     expect(() => human.attack(new Position(1, 1), ai)).toThrow(); // attack twice
   });
 });
-
-describe(`player can reset gameboard`, () => {
-  test(`can reset game board to place ships again if the randomPlaceShips don't place the way player want`, () => {
-    const human = new Human();
-    expect(() => {
-      human.randomPlaceShips();
-      human.resetBoard();
-      human.randomPlaceShips();
-    }).not.toThrow();
-  });
-});

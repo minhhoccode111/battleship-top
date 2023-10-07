@@ -49,16 +49,15 @@ describe('test Ship factory function', () => {
 
   test('have isSunk method defined', () => {
     expect(ship.isSunk).toBeDefined;
-    expect(typeof ship.isSunk).toBe('function');
   });
 
   test('isSunk actually change', () => {
     const ship = new Ship(2);
     ship.hit();
     expect(ship.hits).toBe(1);
-    expect(ship.isSunk()).toBe(false);
+    expect(ship.isSunk).toBe(false);
     ship.hit();
     expect(ship.hits).toBe(2);
-    expect(ship.isSunk()).toBe(true);
+    expect(ship.isSunk).toBe(true);
   });
 });
