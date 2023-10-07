@@ -158,6 +158,8 @@ export class Gameboard {
 
       if (typeof isVertical !== 'boolean') throw new Error('Invalid direction');
 
+      if (!(startPosition instanceof Position)) throw new Error('Invalid start position');
+
       const length = ship.length;
 
       const endPosition = length + (isVertical ? startPosition.col : startPosition.row); // used to check if outside the gameboard
@@ -169,11 +171,18 @@ export class Gameboard {
       const locations = [];
 
       for (let i = 0; i < length; i++) {
-        this.board[row][col].ship = ship;
+        try {
+          const cell = this.board[row][col];
 
-        locations.push(new Position(row, col));
+          cell.ship = ship;
 
-        isVertical ? col++ : row++; // increase based on direction
+          locations.push(new Position(row, col));
+
+          isVertical ? col++ : row++; // increase based on direction
+        } catch (error) {
+          console.log(error);
+          // i--;
+        }
       }
 
       this.shipsInfo.push({ locations, isVertical, ship: ship });
@@ -201,7 +210,7 @@ export class Gameboard {
   }
 }
 
-class Player {
+export class Player {
   constructor() {
     let _board = new Gameboard();
 
@@ -232,6 +241,7 @@ class Player {
         this.board.placeShips(ship, position, direction);
       } catch (error) {
         i--;
+        console.log(error);
       }
     }
   }
@@ -271,7 +281,9 @@ export class Computer extends Player {
           const status = player.board.receivedAttack(position);
 
           return { status, position };
-        } catch (err) {}
+        } catch (err) {
+          console.log(err);
+        }
       }
     };
   }

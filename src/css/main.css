@@ -30,8 +30,7 @@
 }
 
 .gameboard > div {
-  /* margin: 1px; */
-  border: 1px solid red;
+  border: 1px solid rgb(0, 0, 0);
 }
 
 .gameboard > .contain__ship {
@@ -40,20 +39,80 @@
 
 .gameboard > div > span {
   display: block;
-  height: 1rem;
-  width: 1rem;
-  background-color: #060606;
+  height: 3rem;
+  width: 3rem;
   border-radius: 99rem;
 }
 
-.gameboard > div > .contain__ship__hit {
+.gameboard > div > .hit__shot {
   background-color: red;
 }
 
-.gameboard > div > .contain__ship__miss {
-  background-color: green;
+.gameboard > div > .miss__shot {
+  background-color: rgb(255, 255, 255);
 }
 
-.gameboard[data-ai] {
-  cursor: crosshair;
+.gameboard .ai__cell {
+  cursor: cell;
+}
+
+.gameboard .ai__cell:hover {
+  background-color: rgba(122, 255, 122, 0.5);
+}
+
+.gameboard .ai__cell.attacked {
+  cursor: not-allowed;
+}
+
+.gameboard .ai__cell.attacked:hover {
+  background-color: rgba(255, 126, 126, 0.5);
+}
+
+.healthy {
+  border-color: green !important;
+}
+
+.warning {
+  border-color: yellow !important;
+}
+
+.death {
+  border-color: red !important;
+}
+
+/* to place ship in the right direction */
+.ship__head.vertical {
+  border-width: 4px 0 4px 4px;
+}
+
+.ship__head.horizon {
+  border-width: 4px 4px 0 4px;
+}
+
+.ship__body.vertical {
+  border-width: 4px 0 4px 0;
+}
+
+.ship__body.horizon {
+  border-width: 0 4px 0 4px;
+}
+
+.ship__tail.vertical {
+  border-width: 4px 4px 4px 0;
+}
+
+.ship__tail.horizon {
+  border-width: 0 4px 4px 4px;
+}
+
+.ship__one__length {
+  border-width: 4px !important;
+}
+
+.display__message {
+  border: 2px dotted red;
+  border-radius: 99rem;
+  padding: 2rem;
+  text-align: center;
+  margin-bottom: 2rem;
 }
