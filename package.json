@@ -35,6 +35,6 @@
     "watch": "webpack --progress --watch",
     "serve": "webpack-dev-server --open",
     "start": "webpack serve --open",
-    "gh-pages": "git add dist && git commit -m 'Initial dist subtree commit' && git subtree push --prefix dist origin gh-pages"
+    "gh-pages": "git subtree push --prefix dist origin gh-pages"
   }
 }
