@@ -1,6 +1,6 @@
-import { Cell, Ship } from './../js/app';
+import { Cell, Ship } from './../js/class';
 
-describe('test Cell factory function', () => {
+describe('test Cell class', () => {
   let cell = new Cell(1, 2);
   let ship = new Ship(2);
 

@@ -1,13 +1,14 @@
 .main {
   display: flex;
   align-items: flex-start;
-  justify-content: space-between;
+  justify-content: center;
   width: 100%;
   margin: 0 auto 1rem;
+  gap: 2rem;
 }
 
 .gameboard__ctn__ctn {
-  flex: 1;
+  max-width: 52rem;
 }
 
 .gameboard__header {
@@ -115,6 +116,7 @@
   padding: 2rem;
   text-align: center;
   margin: 2rem 0;
+  max-width: 50rem;
 }
 
 .gameboard__ctn {

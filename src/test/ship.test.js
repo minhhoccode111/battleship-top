@@ -1,6 +1,6 @@
-import { Ship } from '../js/app';
+import { Ship } from '../js/class';
 
-describe('test Ship factory function', () => {
+describe('test Ship class', () => {
   test('throw if encounter invalid length', () => {
     expect(() => new Ship(0)).toThrow();
     expect(() => new Ship(6)).toThrow();

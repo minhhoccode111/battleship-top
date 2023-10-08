@@ -1,4 +1,4 @@
-import { Gameboard, Ship, Position, Human, Computer } from '../js/app';
+import { Gameboard, Ship, Position, Human, Computer } from '../js/class';
 
 describe('test Gameboard class', () => {
   let ship;

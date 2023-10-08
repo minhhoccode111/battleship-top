@@ -1,6 +1,6 @@
-import { Ship, Human, Position, Gameboard } from '../js/app';
+import { Ship, Human, Position, Gameboard } from '../js/class';
 
-describe('test Human factory function', () => {
+describe('test Human class', () => {
   test('Human should be defined', () => {
     expect(Human).toBeDefined();
     expect(typeof Human).toBe('function');
@@ -19,7 +19,7 @@ describe('test Human factory function', () => {
     expect(ai).toBeInstanceOf(Human);
   });
 
-  test('player.board is defined and can be access from outside and created by Gameboard factory function', () => {
+  test('player.board is defined and can be access from outside and created by Gameboard class', () => {
     expect(human.board).toBeDefined();
     expect(() => (human.board = new Gameboard())).toThrow();
   });

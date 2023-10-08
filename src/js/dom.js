@@ -1,4 +1,4 @@
-import { Ship, Position, Cell, Gameboard, Human, Computer, Player } from './app';
+import { Position, Human, Computer, Player } from './class';
 
 export class Game {
   static SIZE = 10;

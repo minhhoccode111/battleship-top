@@ -1,6 +1,6 @@
-import { Position } from '../js/app';
+import { Position } from '../js/class';
 
-describe('test Position factory function', () => {
+describe('test Position class', () => {
   const position = new Position(1, 2);
 
   test('factory function takes 2 argument row and col', () => {
