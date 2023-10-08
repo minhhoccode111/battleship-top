@@ -204,15 +204,17 @@ export class Gameboard {
 
       cell.receivedAttack();
 
-      const status = cell.status;
+      const cellStatus = cell.status;
 
-      if (status === 'Hit') this.hitShots.push(position);
+      const shipStatus = cell.ship?.isSunk ? 'Sunk' : 'Not sunk';
 
-      if (status === 'Miss') this.missShots.push(position);
+      if (cellStatus === 'Hit') this.hitShots.push(position);
+
+      if (cellStatus === 'Miss') this.missShots.push(position);
 
       this.shots.push(position);
 
-      return status;
+      return { cellStatus, shipStatus, position };
     };
   }
 }
@@ -248,6 +250,7 @@ export class Player {
         this.board.placeShips(ship, position, direction);
       } catch (error) {
         i--;
+
         console.log(error);
       }
     }
@@ -287,7 +290,7 @@ export class Computer extends Player {
 
           const status = player.board.receivedAttack(position);
 
-          return { status, position };
+          return status;
         } catch (err) {
           console.log(err);
         }

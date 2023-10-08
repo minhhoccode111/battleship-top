@@ -40,9 +40,9 @@ describe('test Human factory function', () => {
     ai.board.placeShips(ship0, new Position(1, 1), true);
     ai.board.placeShips(ship1, new Position(1, 2), true);
     expect(ai.board.allClear).toBe(false);
-    expect(human.attack(new Position(1, 1), ai)).toBe('Hit');
+    expect(human.attack(new Position(1, 1), ai).cellStatus).toBe('Hit');
     expect(ai.board.allClear).toBe(false);
-    expect(human.attack(new Position(1, 2), ai)).toBe('Hit');
+    expect(human.attack(new Position(1, 2), ai).cellStatus).toBe('Hit');
     expect(ai.board.allClear).toBe(true);
     expect(() => human.attack(new Position(1, 1), ai)).toThrow(); // attack twice
   });

@@ -1,6 +1,6 @@
 .main {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   width: 100%;
   margin: 0 auto 1rem;
@@ -114,5 +114,20 @@
   border-radius: 99rem;
   padding: 2rem;
   text-align: center;
-  margin-bottom: 2rem;
+  margin: 2rem 0;
+}
+
+.gameboard__ctn {
+  position: relative;
+}
+
+.prevent__spam {
+  height: 100%;
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0); /* transparent */
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  cursor: cell;
 }

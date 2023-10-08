@@ -1,6 +1,88 @@
 import { Ship, Position, Cell, Gameboard, Human, Computer, Player } from './app';
 
-const _SIZE = 10;
+export class Game {
+  static SIZE = 10;
+
+  static isOver = false;
+
+  static human;
+
+  static ai;
+
+  static checkGameover = (playerToCheck) => {
+    if (playerToCheck.board.allClear) {
+      this.isOver = true;
+    }
+  };
+
+  static start = () => {
+    this.isOver = false;
+
+    this.human = new Human();
+
+    this.ai = new Computer();
+
+    this.human.randomPlaceShips();
+
+    this.ai.randomPlaceShips();
+
+    Display.board(this.human);
+
+    Display.board(this.ai);
+
+    Display.humanShips(this.human);
+
+    // Display.humanShips(this.ai); // TODO used for display ai's ships, for testing
+
+    Display.message(this.human, `Feel free to press the restart button if you're not happy with your ships layout`);
+
+    Display.message(this.ai, `Keep track of game alert here. You will attack the gameboard above`);
+
+    DOM.preventSpam.classList.add('hide');
+
+    DOM.listenHumanAttacks(this.human, this.ai);
+  };
+
+  static humanPlayOneTurn = (human, ai, position) => {
+    const humanAttacksStatus = human.attack(position, ai);
+
+    let humanMessage = `We shot at enemy's water and it's a miss`;
+
+    if (humanAttacksStatus.cellStatus === 'Hit') {
+      Display.aiDeathShips(ai);
+
+      humanMessage = `We shot at enemy's water and it's a hit`;
+
+      if (humanAttacksStatus.shipStatus === 'Sunk') humanMessage += ` and we have sunk their ship`;
+    }
+
+    Display.shotOnBoard(ai, position, humanAttacksStatus.cellStatus);
+
+    Display.message(ai, humanMessage);
+
+    this.checkGameover(ai);
+  };
+
+  static aiPlayOneTurn = (human, ai) => {
+    const aiAttackResult = ai.attack(human);
+
+    let aiMessage = `Enemy shot at our water and it's a miss`;
+
+    if (aiAttackResult.cellStatus === 'Hit') {
+      Display.humanShips(human);
+
+      aiMessage = `Enemy shot at our water and it's a hit`;
+
+      if (aiAttackResult.shipStatus === 'Sunk') aiMessage += ` and they have sunk our ship`;
+    }
+
+    Display.shotOnBoard(human, aiAttackResult.position, aiAttackResult.cellStatus);
+
+    Display.message(human, aiMessage);
+
+    this.checkGameover(human);
+  };
+}
 
 export class DOM {
   static messageHuman = document.querySelector(`[data-message="human"]`);
@@ -12,6 +94,8 @@ export class DOM {
   static gameboardAi = document.querySelector('.gameboard[data-ai]');
 
   static restart = document.querySelector('[data-restart]');
+
+  static preventSpam = document.querySelector('.prevent__spam');
 
   static listenHumanAttacks = (human, ai) => {
     if (!(human instanceof Human)) throw new Error('Invalid Human');
@@ -33,21 +117,30 @@ export class DOM {
 
           const position = new Position(row, col);
 
-          const humanAttacksStatus = human.attack(position, ai);
+          Game.humanPlayOneTurn(human, ai, position);
 
-          Display.aiDeathShips(ai);
+          if (Game.isOver) {
+            Display.stopUserSpamming();
 
-          Display.shotOnBoard(ai, position, humanAttacksStatus);
+            Display.message(ai, `We have win the battle!`);
 
-          Display.message(ai, `Human attacked on AI's board at position {row: ${row + 1}, col: ${col + 1}} and ${humanAttacksStatus}`);
+            Display.message(human, `We have win the battle!`);
 
-          const aiAttackResult = ai.attack(human);
+            return;
+          }
 
-          Display.humanShips(human);
+          // ai play its turn
+          Game.aiPlayOneTurn(human, ai);
 
-          Display.shotOnBoard(human, aiAttackResult.position, aiAttackResult.status);
+          if (Game.isOver) {
+            Display.stopUserSpamming();
 
-          Display.message(human, `AI attacked on human's board at position {row: ${aiAttackResult.position.row + 1}, col: ${aiAttackResult.position.col + 1}} and ${aiAttackResult.status}`);
+            Display.message(ai, `Enemy has win the battle!`);
+
+            Display.message(human, `Enemy has win the battle!`);
+
+            return;
+          }
         },
 
         { once: true }
@@ -70,12 +163,13 @@ class Display {
     if (!(player instanceof Player)) throw new Error('Invalid Player');
 
     const targetBoard = player instanceof Human ? DOM.gameboardHuman : DOM.gameboardAi;
+
     targetBoard.innerHTML = '';
 
     const type = player instanceof Human ? 'human' : 'ai';
 
-    for (let i = 0; i < _SIZE; i++) {
-      for (let j = 0; j < _SIZE; j++) {
+    for (let i = 0; i < Game.SIZE; i++) {
+      for (let j = 0; j < Game.SIZE; j++) {
         const div = document.createElement('div');
 
         div.classList.add('center');
@@ -111,6 +205,7 @@ class Display {
         // loop through all position of that ship
         for (let j = 0; j < locations.length; j++) {
           const currentLocation = locations[j];
+
           const { row, col } = currentLocation;
 
           // select exact cell dom element
@@ -191,46 +286,8 @@ class Display {
 
     cell.appendChild(span);
   };
+
+  static stopUserSpamming = () => {
+    DOM.preventSpam.classList.remove('hide');
+  };
 }
-
-const Game = (() => {
-  let human;
-
-  let ai;
-
-  const start = () => {
-    human = new Human();
-
-    ai = new Computer();
-
-    human.randomPlaceShips();
-
-    ai.randomPlaceShips();
-
-    Display.board(human);
-
-    Display.humanShips(human);
-
-    Display.board(ai);
-
-    Display.humanShips(ai); // TODO used for testing
-
-    DOM.listenHumanAttacks(human, ai);
-
-    Display.message(human, '');
-
-    Display.message(ai, '');
-  };
-
-  return {
-    start,
-  };
-})();
-
-window.addEventListener('DOMContentLoaded', (e) => {
-  Game.start();
-});
-
-DOM.restart.addEventListener('click', (e) => {
-  Game.start();
-});

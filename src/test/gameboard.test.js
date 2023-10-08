@@ -71,11 +71,11 @@ describe('test Gameboard class', () => {
     const isVertical = true;
     gameboard.placeShips(ship, position, isVertical);
     const mock = jest.spyOn(ship, 'hit');
-    expect(gameboard.receivedAttack(new Position(2, 3))).toBe('Hit');
+    expect(gameboard.receivedAttack(new Position(2, 3)).cellStatus).toBe('Hit');
     expect(mock).toHaveBeenCalledTimes(1);
     expect(ship.hits).toBe(1);
-    expect(gameboard.receivedAttack(new Position(3, 4))).toBe('Miss');
-    expect(gameboard.receivedAttack(new Position(2, 4))).toBe('Hit');
+    expect(gameboard.receivedAttack(new Position(3, 4)).cellStatus).toBe('Miss');
+    expect(gameboard.receivedAttack(new Position(2, 4)).cellStatus).toBe('Hit');
     expect(mock).toHaveBeenCalledTimes(2);
     expect(ship.hits).toBe(2);
     expect(ship.isSunk).toBe(true);
