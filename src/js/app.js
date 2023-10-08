@@ -170,19 +170,26 @@ export class Gameboard {
 
       const locations = [];
 
+      const cells = [];
+
+      // check all ship's locations first to see if something throw
       for (let i = 0; i < length; i++) {
-        try {
-          const cell = this.board[row][col];
+        const cell = this.board[row][col];
 
-          cell.ship = ship;
+        // check if this cell is legit to place ship
+        if (cell.ship !== null) throw new Error('Place ship cancel because this cell already has a ship on it');
 
-          locations.push(new Position(row, col));
+        // save cells which will use to place ship at the same time
+        cells.push(cell);
 
-          isVertical ? col++ : row++; // increase based on direction
-        } catch (error) {
-          console.log(error);
-          // i--;
-        }
+        locations.push(new Position(row, col));
+
+        isVertical ? col++ : row++; // increase based on direction
+      }
+
+      // the loop through all legit cells to actually place ship after nothing got throw
+      for (const cell of cells) {
+        cell.ship = ship;
       }
 
       this.shipsInfo.push({ locations, isVertical, ship: ship });
