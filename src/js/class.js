@@ -1,8 +1,8 @@
-const _SIZE = 10; // Gameboard SIZE
+import { _SIZE, _TOTAL_SHIPS, _SHIPS_MAX_LENGTH } from './dom';
 
 export class Ship {
   constructor(len) {
-    if (len > 5 || len < 1) throw new Error('Invalid ship length');
+    if (len > _SHIPS_MAX_LENGTH || len < 1) throw new Error('Invalid ship length');
 
     Object.defineProperties(this, {
       length: {
@@ -16,7 +16,9 @@ export class Ship {
       },
       isSunk: {
         get() {
-          return this.length - _hits < 1;
+          const currentHealth = this.length - _hits;
+
+          return currentHealth < 1;
         },
       },
     });
@@ -33,7 +35,8 @@ export class Ship {
 
 export class Position {
   constructor(row, col) {
-    if (row > 9 || col > 9 || row < 0 || col < 0) throw new Error('Position is not legit');
+    const _legit = _SIZE - 1;
+    if (row > _legit || col > _legit || row < 0 || col < 0) throw new Error('Position is not legit');
 
     Object.defineProperties(this, {
       row: {
@@ -156,9 +159,9 @@ export class Gameboard {
     this.placeShips = (ship, startPosition, isVertical) => {
       if (!(ship instanceof Ship)) throw new Error('Invalid ship object');
 
-      if (typeof isVertical !== 'boolean') throw new Error('Invalid direction');
-
       if (!(startPosition instanceof Position)) throw new Error('Invalid start position');
+
+      if (typeof isVertical !== 'boolean') throw new Error('Invalid direction');
 
       const length = ship.length;
 
@@ -176,12 +179,13 @@ export class Gameboard {
       for (let i = 0; i < length; i++) {
         const cell = this.board[row][col];
 
-        // check if this cell is legit to place ship
+        // throw and cancel place ship process if a cell already has ship on it
         if (cell.ship !== null) throw new Error('Place ship cancel because this cell already has a ship on it');
 
-        // save cells which will use to place ship at the same time
+        // save cells which is legit to use later
         cells.push(cell);
 
+        // locations to update gameboard.shipsInfo
         locations.push(new Position(row, col));
 
         isVertical ? col++ : row++; // increase based on direction
@@ -221,7 +225,7 @@ export class Gameboard {
 
 export class Player {
   constructor() {
-    let _board = new Gameboard();
+    const _board = new Gameboard();
 
     Object.defineProperties(this, {
       board: {
@@ -233,9 +237,7 @@ export class Player {
   }
 
   randomPlaceShips() {
-    const lengths = [1, 1, 1, 2, 2, 3, 3, 4, 5];
-
-    for (let i = 0; i < lengths.length; i++) {
+    for (let i = 0; i < _TOTAL_SHIPS.length; i++) {
       try {
         const row = Math.floor(Math.random() * _SIZE);
 
@@ -245,7 +247,7 @@ export class Player {
 
         const direction = !!Math.floor(Math.random() * 2);
 
-        const ship = new Ship(lengths[i]);
+        const ship = new Ship(_TOTAL_SHIPS[i]);
 
         this.board.placeShips(ship, position, direction);
       } catch (error) {

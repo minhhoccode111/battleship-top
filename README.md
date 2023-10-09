@@ -50,8 +50,8 @@
   - [x] the game loop should step through the game turn by turn using only methods from other objects ✅ 2023-10-08
     - [x] if at any point you are tempted to write a new function inside the game loop, step back and figure out which class or module that function should belong to ✅ 2023-10-08
   - [x] create conditions so that the game ends once one player's ships have all been sunk. This function is appropriate for the Game module ✅ 2023-10-08
-- [ ] finish it up
-  - [ ] there are several options available for letting users place their ships
+- [x] finish it up
+  - [x] there are several options available for letting users place their ships
     - [ ] you can let them type coordinates for each ship,
     - [ ] or investigate implementing drag and drop
     - [x] do it random ✅ 2023-10-08
@@ -130,6 +130,18 @@ use both `html-webpack-plugin` to dynamic generate a `index.html` file base on `
 we can use the `once` option when adding an event listener to make the listener automatically removed after it is triggered once. Pass the `{once: true}` object as the third argument to the `addEventListener()` method, like this: `element.addEventListener('click', (e) => {}, {once: true})`
 
 fix bug of `placeShip` method, make it check through all possible `cell`s to make sure if the `ship` is safe to place on these cells and store these cells, then we loop through these cells again to actually place ship on these cell (before that we check cell and place ship at the same time so when something throw, we dit not remove the ships we placed before the `throw`, and that's how the bug occur)
+
+instead of silently `return` when a condition meets and I want to stop my program, I can use `throw new Error()` to specify where the bug is and combine with `try ... catch` block to try another way, it's just clearer than silent `return`
+
+use question operator `?.` so that if object doesn't have the require method or property then it will return `undefined` instead of `throw new TypeError()`
+
+```js
+const ship = null;
+ship.hit(); // throw new TypeError(`Cannot read properties of null (reading 'hit')`)
+ship?.hit(); // undefined
+```
+
+in order to test in `browser`-like environment (instead of `node` environment by default which will throw an error if it encounter the statement like `document.querySelector()`) we first have to install the environment with `npm install jest-environment-jsdom` then inside the file `jest.config.js` we need to set the property `testEnvironment: 'jsdom'` so that everything works
 
 ## idea to implement
 

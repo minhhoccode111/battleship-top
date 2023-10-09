@@ -15,10 +15,6 @@ import './js/animation.js';
 
 import { DOM, Game } from './js/dom.js';
 
-window.addEventListener('DOMContentLoaded', (e) => {
-  Game.start();
-});
+window.addEventListener('DOMContentLoaded', Game.start);
 
-DOM.restart.addEventListener('click', (e) => {
-  Game.start();
-});
+DOM.restart.addEventListener('click', Game.start);

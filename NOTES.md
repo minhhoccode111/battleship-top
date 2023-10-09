@@ -1,0 +1,56 @@
+# document
+
+- `class.js` file
+  - `Ship` class takes a `length` argument
+    - has a `length` property (read-only) to specify the ship's length
+    - has a `hits` property (read-only) to specify hits that ship has taken
+    - has a `isSunk()` method to specify whether the ship has been sunk base on its health (`length` - `hits`)
+    - has a `hit()` method to increase `hits` property, ignore if ship is already sunk
+  - `Position` class takes `row` and `col` argument
+    - has a `row` property (read-only), `throw new Error()` if outside the `gameboard`
+    - has a `col` property (read-only), `throw new Error()` if outside the `gameboard`
+  - `Cell` class takes `row` and `col` argument
+    - has a `position` property (read-only), which is created using `Position` class
+    - has a `get ship()` and `set ship()`, `get` will return whether the cell contain any `ship` on it or `null` if not, `set` is used to set a `ship` on the cell if it doesn't contain any `ship` and `throw new Error()` if we try to place the 2nd `ship` on the same cell
+    - has a `isReceivedAttack` property (read-only) to determine whether that cell received an attack and can only be changed to `true` once when method `receivedAttack()` called.
+    - has a `receivedAttack()` method, which is used to change `isReceivedAttack` property to `true` and can only be called once, `throw new Error()` if we try to call this method twice
+      - after `receivedAttack()` if the `cell` contains a `ship` on it, then call `hit()` on the `ship` object which place on the `cell`
+    - has a `status` property (read-only), which will return `Not yet` (not been received attack yet), `Hit` (received attack and hit the `ship` that cell contains), and `Miss` (received attack but the cell doesn't contain any `ship`) base to cell's status
+  - `Gameboard` class takes no arguments
+    - create a 10x10 `cell`s in it, represent a `gameboard` and put inside `board` property
+    - has a `placeShips()` method which takes 3 arguments: `ship` (created by `Ship` class), `startPosition` (created by `Position` class), `isVertical` (is a `boolean`) and will place that `ship` onto the `gameboard` respectively base on `ship`'s length + `startPosition` and direction (base one `isVertical`)
+    - has a `receivedAttack()` method which takes a `position` (created by `Position` class) argument determine which `cell` on the `gameboard` received the attack and call `receivedAttack` method of that `cell` (and then will a `hit()` method on that cell's ship if there is any) and return a `cell`'s status to specify that attack is `Hit` or `Miss`
+    - has a `allClear` property (read-only) to know whether every `ship` on `gameboard` is sunk
+    - has a `hitShots` property will return an array of `position`s of cells which have received attack and it's a `Hit`
+    - has a `missShots` property will return an array of `position`s of cells which have received attack and it's a `Miss`
+    - has a `shots` property will return an array of `position`s of cells which have received attack
+    - has a `shipsInfo` property, keep info of every ship which has been placed on the `gameboard` using `placeShip()` method, `shipsInfo` contains objects which have `locations` of the `ship` on the board and `direction` of the `ship` and the `ship` property itself
+    - has a `ships` property which will return an object to divide all `ship`s on the `gameboard` into 3 category `healthy` (more than 1 shot to sunk), `warning` (1 shot ships), `death` (dead ships)
+  - `Player` class takes no arguments
+    - has a `board` property (read-only) is a instance of `Gameboard` class
+    - has a `randomPlaceShips()` method takes no arguments, which will base on a variable `_TOTAL_SHIPS_LENGTH = [1,2,3,4,5]` to create 5 `new Ship()` with the length respectively to the variable and place those randomly on the `gameboard`
+  - `Human` class `extends` from `Player` takes no arguments
+    - has a `attack()` method which takes a `position` and `player` then make the `gameboard` of that `player` at the `position` involve `receivedAttack()`
+  - `Computer` class extends from Player takes no arguments
+    - has a `attack()` method which takes a `player` and then `try` until it randomly hit a legit `position` on `player`'s `gameboard`
+- `dom.js` file
+  - has a `_SIZE=10` global variable that everything base on it to setting everything related to `gameboard`'s size
+  - has a `_TOTAL_SHIPS=[1,1,1,2,2,3,3,4,5]` global variable that will be used with `randomPlaceShips` at the beginning of every game
+  - has a `_SHIPS_MAX_LENGTH=5` global variable to create `new Ship` base on it, if the length we pass in `Ship` constructor is greater than this global variable then `throw new Error()`
+  - `Game` class contains all `static` methods and properties
+    - `changeSize()` takes 1 number argument and set `_SIZE` variable and everything related to be
+    - `changeTotalShips()` takes 1 array argument and set `_TOTAL_SHIPS` variable to it
+    - `changeShipsMaxLength()` takes 1 number argument and set `_SHIPS_MAX_LENGTH` to it
+    - `checkGameover()` method takes a `player` argument and see if all `player`'s ships are sunk
+    - `start()` method init the starting state of the game, display info and stuff
+    - `humanPlayOneTurn()` method takes `human` which is the player attacking now, `ai` is the player receiving the attack and `position` is where to attack
+    - `aiPlayOneTurn()` method takes `human` which is the player received attack and `ai` is the player attack (and this player attack random)
+  - `DOM` class contains all `static` methods and properties
+    - `listenHumanAttacks()` method is call when the game is start, so that `addEventListener` to every cell on the `gameboard` to listen for `user` click and call `humanPlayOneTurn` in `Game` class
+  - `Display` class contains all `static` methods and properties
+    - `message()` method used to alert the game's state
+    - `board()` method used to generate `gameboard`
+    - `humanShips()` method used to display all human's ships only human needs this because user will attack `ai` player which ships are invisible
+    - `aiDeathShips()` method used to display all ai's death ships to let user know ships they have sunk
+    - `shotOnBoard()` method used to display all shots a `gameboard` has taken, used for both `player`s to keep track of where play have attacked
+    - `stopUserSpamming()` method used to display an invisible element on top of the `gameboard` in DOM so that user can't spam after the game has ended

@@ -1,7 +1,28 @@
 import { Position, Human, Computer, Player } from './class';
 
+/**
+ * @jest-environment jsdom
+ */
+
+// these variables can be put inside Game class but I don't want
+export let _SIZE = 10; // Gameboard SIZE
+
+export let _TOTAL_SHIPS = [1, 1, 1, 2, 2, 3, 3, 4, 5]; // total of ships we want on our gameboard
+
+export let _SHIPS_MAX_LENGTH = 5;
+
 export class Game {
-  static SIZE = 10;
+  static changeSize = (newSize) => {
+    _SIZE = newSize;
+
+    DOM.gameboardAi.style.cssText = `grid-template: repeat(${_SIZE}, 1fr) / repeat(${_SIZE}, 1fr)`;
+
+    DOM.gameboardHuman.style.cssText = `grid-template: repeat(${_SIZE}, 1fr) / repeat(${_SIZE}, 1fr)`;
+  };
+
+  static changeTotalShips = (newShips) => (_TOTAL_SHIPS = newShips);
+
+  static changeShipsMaxLength = (newLength) => (_SHIPS_MAX_LENGTH = newLength);
 
   static isOver = false;
 
@@ -13,6 +34,8 @@ export class Game {
     if (playerToCheck.board.allClear) {
       this.isOver = true;
     }
+
+    return this.isOver;
   };
 
   static start = () => {
@@ -32,11 +55,11 @@ export class Game {
 
     Display.humanShips(this.human);
 
-    // Display.humanShips(this.ai); // TODO used for display ai's ships, for testing
+    Display.humanShips(this.ai); // TODO used for display ai's ships, for testing
 
-    Display.message(this.human, `Feel free to press the restart button if you're not happy with your ships layout`);
+    Display.message(this.human, `Press the restart button if`, `you're not happy with your ships layout`);
 
-    Display.message(this.ai, `Keep track of game alert here. You will attack the gameboard above`);
+    Display.message(this.ai, `Keep track of game alert here`, `You will attack the gameboard above`);
 
     DOM.preventSpam.classList.add('hide');
 
@@ -53,14 +76,21 @@ export class Game {
 
       humanMessage = `We shot at enemy's water and it's a hit`;
 
-      if (humanAttacksStatus.shipStatus === 'Sunk') humanMessage += ` and we have sunk their ship`;
+      if (humanAttacksStatus.shipStatus === 'Sunk') humanMessage += `, we have sunk their ship`;
     }
+    humanMessage = humanMessage.split(',');
 
     Display.shotOnBoard(ai, position, humanAttacksStatus.cellStatus);
 
-    Display.message(ai, humanMessage);
+    Display.message(ai, humanMessage[0], humanMessage[1] || '');
 
-    this.checkGameover(ai);
+    if (this.checkGameover(ai)) {
+      Display.stopUserSpamming();
+
+      Display.message(ai, `Congratulation!`, `We have win the battle!`, `Play again?`);
+
+      Display.message(human, `Congratulation!`, `We have win the battle!`, `Play again?`);
+    }
   };
 
   static aiPlayOneTurn = (human, ai) => {
@@ -73,14 +103,22 @@ export class Game {
 
       aiMessage = `Enemy shot at our water and it's a hit`;
 
-      if (aiAttackResult.shipStatus === 'Sunk') aiMessage += ` and they have sunk our ship`;
+      if (aiAttackResult.shipStatus === 'Sunk') aiMessage += `, they have sunk our ship`;
     }
+
+    aiMessage = aiMessage.split(',');
 
     Display.shotOnBoard(human, aiAttackResult.position, aiAttackResult.cellStatus);
 
-    Display.message(human, aiMessage);
+    Display.message(human, `Enemy is aiming...`, aiMessage[0], aiMessage[1]);
 
-    this.checkGameover(human);
+    if (this.checkGameover(human)) {
+      Display.stopUserSpamming();
+
+      Display.message(ai, `Oh noo...`, `Enemy has win the battle!`, `Play again?`);
+
+      Display.message(human, `Oh no...`, `Enemy has win the battle!`, `Play again?`);
+    }
   };
 }
 
@@ -119,28 +157,10 @@ export class DOM {
 
           Game.humanPlayOneTurn(human, ai, position);
 
-          if (Game.isOver) {
-            Display.stopUserSpamming();
-
-            Display.message(ai, `We have win the battle!`);
-
-            Display.message(human, `We have win the battle!`);
-
-            return;
-          }
+          if (Game.isOver) return;
 
           // ai play its turn
           Game.aiPlayOneTurn(human, ai);
-
-          if (Game.isOver) {
-            Display.stopUserSpamming();
-
-            Display.message(ai, `Enemy has win the battle!`);
-
-            Display.message(human, `Enemy has win the battle!`);
-
-            return;
-          }
         },
 
         { once: true }
@@ -150,13 +170,13 @@ export class DOM {
 }
 
 class Display {
-  static message = (player, content) => {
+  static message = (player, content0, content1 = '', content2 = '') => {
     let targetMessage;
 
     if (player instanceof Human) targetMessage = DOM.messageHuman;
     else targetMessage = DOM.messageAi;
 
-    targetMessage.textContent = content;
+    targetMessage.innerHTML = `<p>${content0}</p><p>${content1}</p><p>${content2}</p>`;
   };
 
   static board = (player) => {
@@ -168,8 +188,8 @@ class Display {
 
     const type = player instanceof Human ? 'human' : 'ai';
 
-    for (let i = 0; i < Game.SIZE; i++) {
-      for (let j = 0; j < Game.SIZE; j++) {
+    for (let i = 0; i < _SIZE; i++) {
+      for (let j = 0; j < _SIZE; j++) {
         const div = document.createElement('div');
 
         div.classList.add('center');
