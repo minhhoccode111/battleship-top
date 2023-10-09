@@ -15,6 +15,18 @@ import './js/animation.js';
 
 import { DOM, Game } from './js/dom.js';
 
-window.addEventListener('DOMContentLoaded', Game.start);
+window.addEventListener('DOMContentLoaded', (e) => {
+  // Game.changeSize(25);
 
-DOM.restart.addEventListener('click', Game.start);
+  // Game.changeTotalShips([1, 1, 2, 2, 3, 3, 4, 5]);
+
+  Game.start();
+
+  DOM.listenRestart();
+
+  DOM.listenSetting();
+
+  DOM.listenCloseForm();
+
+  DOM.listenSubmitForm();
+});

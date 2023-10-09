@@ -17,6 +17,7 @@
   margin-bottom: 1rem;
   white-space: nowrap;
 }
+
 .gameboard {
   border: 1px solid red;
   display: grid;
@@ -128,7 +129,7 @@
   position: relative;
 }
 
-.prevent__spam {
+[data-prevent-spam] {
   height: 100%;
   width: 100%;
   background-color: rgba(255, 255, 255, 0); /* transparent */
@@ -137,4 +138,10 @@
   left: 0;
   right: 0;
   cursor: cell;
+}
+
+@media screen and (min-width: 900px) {
+  .display__message p {
+    font-size: 2rem;
+  }
 }

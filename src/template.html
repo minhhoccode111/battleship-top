@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Battleship</title>
   </head>
   <body>
     <div id="wrapper">
@@ -20,6 +20,65 @@
       </header>
       <nav id="nav" class="nav center">
         <button type="button" class="btn-13" data-restart><span>Restart</span></button>
+        <button type="button" class="btn-13" data-setting><span>Setting</span></button>
+        <div class="popup-form-ctn center hide" data-popup-form-ctn>
+          <header class="popup-form-title-ctn">
+            <h2 class="popup-form-title">Setting</h2>
+          </header>
+          <div class="warning-ctn">
+            <p><u>Warning:</u></p>
+            <p><u>PLEASE DON'T TRY TO BREAK THIS GAME.</u></p>
+            <p>
+              It will continuously loop and try to place all ships randomly on each player's gameboard, if you input something not meet the logic (e.g. you try to place a ship 5 unit length in a 4*4
+              size gameboard, or you try to place 5 ships 1 unit length in a 2*2 size gameboard ...etc), then you will have infinite loop and your browser will be freezed.
+            </p>
+            <p>Good luck. Have fun. Don't freeze!</p>
+          </div>
+          <div class="form-ctn">
+            <p><u>Setup:</u></p>
+            <form class="form" data-popup-form>
+              <div class="form-input-ctn">
+                <label for="gameboard-size"
+                  >Size:*
+                  <input
+                    type="number"
+                    id="gameboard-size"
+                    data-form-input-size
+                    placeholder="10 to 25"
+                    value="10"
+                    required
+                    max="25"
+                    min="2"
+                    pattern="/\d+/"
+                    title="Please enter a number represent gameboard's size"
+                  />
+                </label>
+                <p></p>
+              </div>
+              <div class="form-input-ctn">
+                <label for="total-ships"
+                  >Ships:*
+                  <input
+                    type="text"
+                    id="total-ships"
+                    data-form-input-ships
+                    placeholder="1 2 3 4 5"
+                    value="1 2 3 4 5"
+                    required
+                    pattern="[\d?\s]+"
+                    title="Please enter numbers from 1 to 9 separate with space. example: 1 2 3 4 5"
+                  />
+                </label>
+                <p>
+                  The number of ships you want and its length (e.g. if you want 3 ships with 5 unit length then please input [5 5 5] in the field, separate with space), be careful and try not to
+                  freeze your browser!
+                </p>
+              </div>
+              <button type="submit" class="btn-13 submit-form" data-submit-form><span>Submit</span></button>
+              <button type="button" class="btn-13 close-form" data-close-form><span>Close</span></button>
+            </form>
+          </div>
+        </div>
       </nav>
       <main class="main" id="main">
         <div class="gameboard__ctn__ctn">
@@ -33,7 +92,7 @@
           <h2 class="gameboard__header">ENEMY WATERS</h2>
           <div class="gameboard__ctn center">
             <div class="gameboard" data-ai></div>
-            <div class="prevent__spam hide"></div>
+            <div class="hide" data-prevent-spam></div>
           </div>
           <div class="display__message" data-message="ai">alert something</div>
         </div>

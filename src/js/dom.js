@@ -9,7 +9,7 @@ export let _SIZE = 10; // Gameboard SIZE
 
 export let _TOTAL_SHIPS = [1, 1, 1, 2, 2, 3, 3, 4, 5]; // total of ships we want on our gameboard
 
-export let _SHIPS_MAX_LENGTH = 5;
+export let _SHIPS_MAX_LENGTH = 9;
 
 export class Game {
   static changeSize = (newSize) => {
@@ -21,8 +21,6 @@ export class Game {
   };
 
   static changeTotalShips = (newShips) => (_TOTAL_SHIPS = newShips);
-
-  static changeShipsMaxLength = (newLength) => (_SHIPS_MAX_LENGTH = newLength);
 
   static isOver = false;
 
@@ -55,7 +53,7 @@ export class Game {
 
     Display.humanShips(this.human);
 
-    Display.humanShips(this.ai); // TODO used for display ai's ships, for testing
+    // Display.humanShips(this.ai); // FIXME used for display ai's ships, for testing
 
     Display.message(this.human, `Press the restart button if`, `you're not happy with your ships layout`);
 
@@ -133,7 +131,66 @@ export class DOM {
 
   static restart = document.querySelector('[data-restart]');
 
-  static preventSpam = document.querySelector('.prevent__spam');
+  static setting = document.querySelector('[data-setting]');
+
+  static preventSpam = document.querySelector('[data-prevent-spam]');
+
+  static popupFormCtn = document.querySelector('[data-popup-form-ctn]');
+
+  static popupForm = document.querySelector('[data-popup-form]');
+
+  static submitForm = document.querySelector(`[data-submit-form]`);
+
+  static closeForm = document.querySelector(`[data-close-form]`);
+
+  static inputSize = document.querySelector(`[data-form-input-size]`);
+
+  static inputShips = document.querySelector(`[data-form-input-ships]`);
+
+  static #showPopupForm = () => this.popupFormCtn.classList.remove('hide');
+
+  static #hidePopupForm = () => this.popupFormCtn.classList.add('hide');
+
+  static listenRestart = () => {
+    this.restart.addEventListener('click', (e) => {
+      Game.start();
+    });
+  };
+
+  static listenSetting = () => {
+    this.setting.addEventListener('click', (e) => {
+      this.#showPopupForm();
+    });
+  };
+
+  static listenSubmitForm = () => {
+    this.popupForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const inputSizeValue = +this.inputSize.value;
+
+      const inputShipsValue = this.inputShips.value
+        .trim()
+
+        .split(/\s*/)
+
+        .reduce((total, current) => (+current > 0 ? [...total, +current] : total), []);
+
+      Game.changeSize(inputSizeValue);
+
+      Game.changeTotalShips(inputShipsValue);
+
+      Game.start();
+
+      this.#hidePopupForm();
+    });
+  };
+
+  static listenCloseForm = () => {
+    this.closeForm.addEventListener('click', (e) => {
+      this.#hidePopupForm();
+    });
+  };
 
   static listenHumanAttacks = (human, ai) => {
     if (!(human instanceof Human)) throw new Error('Invalid Human');

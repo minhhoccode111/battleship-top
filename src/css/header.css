@@ -10,6 +10,7 @@
   align-self: stretch;
   padding-right: 20rem;
 }
+
 .header__icon {
   background: url('./../assets/icon/aim.svg') center/contain no-repeat red;
   height: 100%;
@@ -18,17 +19,21 @@
   animation: rotate 750ms linear 0ms infinite;
   cursor: crosshair;
 }
+
 .header__icon:hover {
   animation: none;
 }
+
 .header__title {
   font-size: 6rem;
   text-transform: uppercase;
   white-space: nowrap;
 }
+
 .header__link {
   white-space: nowrap;
 }
+
 @keyframes rotate {
   from {
     transform: rotate(0deg);
