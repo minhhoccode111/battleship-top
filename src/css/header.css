@@ -14,8 +14,8 @@
 .header__icon {
   background: url('./../assets/icon/aim.svg') center/contain no-repeat red;
   height: 100%;
+  aspect-ratio: 1 / 1;
   border-radius: 99rem;
-  width: 6rem;
   animation: rotate 750ms linear 0ms infinite;
   cursor: crosshair;
 }

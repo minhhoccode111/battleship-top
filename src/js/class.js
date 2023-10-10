@@ -1,8 +1,10 @@
-import { _SIZE, _TOTAL_SHIPS, _SHIPS_MAX_LENGTH } from './dom';
+import { _SIZE, _TOTAL_SHIPS, _SHIPS_MAX_LENGTH, Game } from './dom';
 
 export class Ship {
-  constructor(len) {
+  constructor(len = 3) {
     if (len > _SHIPS_MAX_LENGTH || len < 1) throw new Error('Invalid ship length');
+
+    let _hits = 0;
 
     Object.defineProperties(this, {
       length: {
@@ -14,6 +16,7 @@ export class Ship {
           return _hits;
         },
       },
+
       isSunk: {
         get() {
           const currentHealth = this.length - _hits;
@@ -21,21 +24,22 @@ export class Ship {
           return currentHealth < 1;
         },
       },
+
+      hit: {
+        value: function () {
+          if (this.isSunk) throw new Error(`Can't attack sunk ship`);
+
+          _hits++;
+        },
+      },
     });
-
-    let _hits = 0;
-
-    this.hit = () => {
-      if (this.isSunk) throw new Error(`Can't attack sunk ship`);
-
-      _hits++;
-    };
   }
 }
 
 export class Position {
   constructor(row, col) {
     const _legit = _SIZE - 1;
+
     if (row > _legit || col > _legit || row < 0 || col < 0) throw new Error('Position is not legit');
 
     Object.defineProperties(this, {
@@ -60,15 +64,17 @@ export class Cell {
 
     let _ship = null;
 
-    this.receivedAttack = function () {
-      if (_isReceivedAttack) throw new Error('Already attacked this cell');
-
-      _isReceivedAttack = true;
-
-      _ship?.hit();
-    };
-
     Object.defineProperties(this, {
+      receivedAttack: {
+        value: function () {
+          if (_isReceivedAttack) throw new Error('Already attacked this cell');
+
+          _isReceivedAttack = true;
+
+          _ship?.hit();
+        },
+      },
+
       position: {
         value: new Position(row, col),
       },
@@ -93,11 +99,11 @@ export class Cell {
 
       status: {
         get() {
-          if (!_isReceivedAttack) return 'Not yet'; // if is not yet received attack
+          if (!_isReceivedAttack) return 'Not yet';
 
-          if (_ship) return 'Hit'; // if received attack and contains a ship
+          if (_ship) return 'Hit';
 
-          return 'Miss'; // else
+          return 'Miss';
         },
       },
     });
@@ -146,6 +152,75 @@ export class Gameboard {
           );
         },
       },
+
+      placeShips: {
+        value: function (ship, startPosition, isVertical) {
+          if (!(ship instanceof Ship)) throw new Error('Invalid ship object');
+
+          if (!(startPosition instanceof Position)) throw new Error('Invalid start position');
+
+          if (typeof isVertical !== 'boolean') throw new Error('Invalid direction');
+
+          const length = ship.length;
+
+          const endPosition = length + (isVertical ? startPosition.col : startPosition.row); // used to check if outside the gameboard
+
+          if (endPosition > _SIZE) throw new Error('This ship goes beyond gameboard');
+
+          let { row, col } = startPosition;
+
+          const locations = [];
+
+          const cells = [];
+
+          // check all ship's locations first to see if something throw
+          for (let i = 0; i < length; i++) {
+            const cell = this.board[row][col];
+
+            // throw and cancel place ship process if a cell already has ship on it
+            if (cell.ship !== null) throw new Error('Place ship cancel because this cell already has a ship on it');
+
+            // save cells which is legit to use later
+            cells.push(cell);
+
+            // locations to update gameboard.shipsInfo
+            locations.push(new Position(row, col));
+
+            isVertical ? col++ : row++; // increase based on direction
+          }
+
+          // the loop through all legit cells to actually place ship after nothing got throw
+          for (const cell of cells) {
+            cell.ship = ship;
+          }
+
+          this.shipsInfo.push({ locations, isVertical, ship: ship });
+        },
+      },
+
+      receivedAttack: {
+        value: function (position) {
+          if (!(position instanceof Position)) throw new Error('Invalid position');
+
+          const { row, col } = position;
+
+          const cell = this.board[row][col];
+
+          cell.receivedAttack();
+
+          const cellStatus = cell.status;
+
+          const shipStatus = cell.ship?.isSunk ? 'Sunk' : 'Not sunk';
+
+          if (cellStatus === 'Hit') this.hitShots.push(position);
+
+          if (cellStatus === 'Miss') this.missShots.push(position);
+
+          this.shots.push(position);
+
+          return { cellStatus, shipStatus, position };
+        },
+      },
     });
 
     for (let i = 0; i < _SIZE; i++) {
@@ -155,83 +230,14 @@ export class Gameboard {
         this.board[i].push(new Cell(i, j));
       }
     }
-
-    this.placeShips = (ship, startPosition, isVertical) => {
-      if (!(ship instanceof Ship)) throw new Error('Invalid ship object');
-
-      if (!(startPosition instanceof Position)) throw new Error('Invalid start position');
-
-      if (typeof isVertical !== 'boolean') throw new Error('Invalid direction');
-
-      const length = ship.length;
-
-      const endPosition = length + (isVertical ? startPosition.col : startPosition.row); // used to check if outside the gameboard
-
-      if (endPosition > _SIZE) throw new Error('This ship goes beyond gameboard');
-
-      let { row, col } = startPosition;
-
-      const locations = [];
-
-      const cells = [];
-
-      // check all ship's locations first to see if something throw
-      for (let i = 0; i < length; i++) {
-        const cell = this.board[row][col];
-
-        // throw and cancel place ship process if a cell already has ship on it
-        if (cell.ship !== null) throw new Error('Place ship cancel because this cell already has a ship on it');
-
-        // save cells which is legit to use later
-        cells.push(cell);
-
-        // locations to update gameboard.shipsInfo
-        locations.push(new Position(row, col));
-
-        isVertical ? col++ : row++; // increase based on direction
-      }
-
-      // the loop through all legit cells to actually place ship after nothing got throw
-      for (const cell of cells) {
-        cell.ship = ship;
-      }
-
-      this.shipsInfo.push({ locations, isVertical, ship: ship });
-    };
-
-    this.receivedAttack = (position) => {
-      if (!(position instanceof Position)) throw new Error('Invalid position');
-
-      const { row, col } = position;
-
-      const cell = this.board[row][col];
-
-      cell.receivedAttack();
-
-      const cellStatus = cell.status;
-
-      const shipStatus = cell.ship?.isSunk ? 'Sunk' : 'Not sunk';
-
-      if (cellStatus === 'Hit') this.hitShots.push(position);
-
-      if (cellStatus === 'Miss') this.missShots.push(position);
-
-      this.shots.push(position);
-
-      return { cellStatus, shipStatus, position };
-    };
   }
 }
 
 export class Player {
   constructor() {
-    const _board = new Gameboard();
-
     Object.defineProperties(this, {
       board: {
-        get() {
-          return _board;
-        },
+        value: new Gameboard(),
       },
     });
   }
@@ -263,13 +269,17 @@ export class Human extends Player {
   constructor() {
     super();
 
-    this.attack = (position, player) => {
-      if (!(position instanceof Position) || !(player.board instanceof Gameboard)) throw new Error('Invalid arguments');
+    Object.defineProperties(this, {
+      attack: {
+        value: function (position, player) {
+          if (!(position instanceof Position) || !(player.board instanceof Gameboard)) throw new Error('Invalid arguments');
 
-      const status = player.board.receivedAttack(position);
+          const status = player.board.receivedAttack(position);
 
-      return status;
-    };
+          return status;
+        },
+      },
+    });
   }
 }
 
@@ -277,7 +287,7 @@ export class Computer extends Player {
   constructor() {
     super();
 
-    this.attack = (player) => {
+    const _randomAttack = (player) => {
       if (!(player.board instanceof Gameboard)) throw new Error('Invalid board');
 
       const length = player.board.shots.length;
@@ -297,6 +307,16 @@ export class Computer extends Player {
           // console.log(err);
         }
       }
+    };
+
+    // const checkNextCellDirection = (currentCell, direction) => {
+    //   if (currentCell.status === 'Miss') return null;
+
+    //   if(currentCell.status==='Not yet')return currentCell
+    // };
+
+    this.attack = (player) => {
+      return _randomAttack(player);
     };
   }
 }

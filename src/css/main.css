@@ -4,7 +4,7 @@
   justify-content: center;
   width: 100%;
   margin: 0 auto 10rem;
-  gap: 2rem;
+  gap: 0.8rem;
 }
 
 .gameboard__ctn__ctn {
@@ -24,8 +24,8 @@
   grid-template-columns: repeat(10, 1fr);
   grid-template-rows: repeat(10, 1fr);
   gap: 1px;
-  width: calc(50vw - 1rem);
-  height: calc(50vw - 1rem);
+  width: calc(50vw - 1.6rem);
+  height: calc(50vw - 1.6rem);
   max-width: 50rem;
   max-height: 50rem;
   background: url('./../assets/img/battleship.png') center/cover no-repeat red;
