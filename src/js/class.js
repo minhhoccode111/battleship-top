@@ -309,14 +309,79 @@ export class Computer extends Player {
       }
     };
 
-    // const checkNextCellDirection = (currentCell, direction) => {
-    //   if (currentCell.status === 'Miss') return null;
+    const _aroundPositions = {
+      top: { moveRow: -1, moveCol: 0 },
 
-    //   if(currentCell.status==='Not yet')return currentCell
-    // };
+      bottom: { moveRow: 1, moveCol: 0 },
+
+      left: { moveRow: 0, moveCol: -1 },
+
+      right: { moveRow: 0, moveCol: 1 },
+    };
 
     this.attack = (player) => {
-      return _randomAttack(player);
+      const board = player.board.board;
+
+      const notSunkCells = [];
+
+      board.forEach((row) => {
+        row.forEach((cell) => {
+          if (cell.status === 'Hit' && !cell.ship.isSunk) notSunkCells.push(cell);
+        });
+      });
+
+      const possibleCells = [];
+
+      notSunkCells.forEach((cell) => {
+        for (const direction in _aroundPositions) {
+          const move = _aroundPositions[direction];
+
+          const { moveRow, moveCol } = move;
+
+          let nextCellRow = cell.position.row + moveRow;
+
+          let nextCellCol = cell.position.col + moveCol;
+
+          if (!board[nextCellRow]) continue;
+
+          let nextCell = board[nextCellRow][nextCellCol];
+
+          while (nextCell) {
+            if (nextCell.status === 'Hit' && !nextCell.ship.isSunk) {
+              // keep getting next cell of that direction
+              nextCellRow += moveRow;
+
+              nextCellCol += moveCol;
+
+              if (!board[nextCellRow]) break;
+
+              nextCell = board[nextCellRow][nextCellCol];
+
+              continue;
+            }
+
+            // save nextCell if has not been hit yet
+            if (nextCell.status === 'Not yet') possibleCells.push(nextCell);
+
+            break;
+          }
+        }
+      });
+
+      if (!possibleCells.length) return _randomAttack(player);
+
+      let cellToCheck = possibleCells.shift();
+
+      while (possibleCells.length) {
+        const index = possibleCells.indexOf(cellToCheck);
+
+        // immediate break out and attack any cell which appear twice in possibleCells
+        if (index > -1) break;
+
+        cellToCheck = possibleCells.shift();
+      }
+
+      return player.board.receivedAttack(cellToCheck.position);
     };
   }
 }

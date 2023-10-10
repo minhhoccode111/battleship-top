@@ -91,3 +91,21 @@ describe(`test randomPlaceShips method of Player class`, () => {
     expect(mock8).toBeCalledTimes(5);
   });
 });
+
+describe(`Computer makes smart moves to attack another player`, () => {
+  test(`attack and sunk a ship`, () => {
+    const ai = new Computer();
+    const human = new Human();
+    const ship = new Ship(2);
+    human.board.placeShips(ship, new Position(0, 0), true); // horizon ship start at 0,0
+    human.board.receivedAttack(new Position(0, 1)); // hit
+    human.board.receivedAttack(new Position(0, 2)); // miss
+    human.board.receivedAttack(new Position(1, 0)); // miss
+    human.board.receivedAttack(new Position(1, 1)); // miss
+    const attackResult = ai.attack(human); // will hit the last remain 0,0
+    expect(attackResult.cellStatus).toBe('Hit');
+    expect(attackResult.shipStatus).toBe('Sunk');
+    expect(attackResult.position.row).toBe(0);
+    expect(attackResult.position.col).toBe(0);
+  });
+});
