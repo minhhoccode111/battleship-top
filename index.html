@@ -3,8 +3,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/src/assets/favicon/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/src/assets/favicon/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/src/assets/favicon/favicon-16x16.png" />
+
+    <link rel="manifest" href="/src/assets/favicon/site.webmanifest" />
     <title>Battleship</title>
-  <script defer src="runtime.bundle.js"></script><script defer src="index.bundle.js"></script></head>
+  <link rel="icon" href="favicon-16x16.png"><script defer src="runtime.bundle.js"></script><script defer src="index.bundle.js"></script></head>
   <body>
     <div id="wrapper">
       <header class="header" id="header">
@@ -30,12 +35,13 @@
             <p><u>PLEASE DON'T TRY TO BREAK THIS GAME.</u></p>
             <p>
               It will continuously loop and try to place all ships randomly on each player's gameboard, if you input something not meet the logic (e.g. you try to place a ship 5 unit length in a 4*4
-              size gameboard, or you try to place 5 ships 1 unit length in a 2*2 size gameboard ...etc), then you will have infinite loop and your browser will be freezed.
+              size gameboard, or you try to place 5 ships 1 unit length in a 2*2 size gameboard ...etc), then you will have infinite loop and your browser will be frozen.
             </p>
             <p>Good luck. Have fun. Don't freeze!</p>
           </div>
           <div class="form-ctn">
             <p><u>Setup:</u></p>
+            <hr />
             <form class="form" data-popup-form>
               <div class="form-input-ctn">
                 <label for="gameboard-size"
@@ -53,8 +59,25 @@
                     title="Please enter a number represent gameboard's size"
                   />
                 </label>
-                <p></p>
+                <!-- <p></p> -->
               </div>
+              <hr />
+              <div class="form-input-ctn">
+                <span>Difficulty:*</span>
+                <label>
+                  <input type="radio" name="difficulty" value="1" checked title="Normal mode" />
+                  Normal
+                </label>
+                <label>
+                  <input type="radio" name="difficulty" value="2" title="Hard mode" />
+                  Hard
+                </label>
+                <label>
+                  <input type="radio" name="difficulty" value="3" title="Unbeatable mode" />
+                  Unbeatable
+                </label>
+              </div>
+              <hr />
               <div class="form-input-ctn">
                 <label for="total-ships"
                   >Ships:*
@@ -69,11 +92,9 @@
                     title="Please enter numbers from 1 to 9 separate with space. example: 1 2 3 4 5"
                   />
                 </label>
-                <p>
-                  The number of ships you want and its length (e.g. if you want 3 ships with 5 unit length then please input [5 5 5] in the field, separate with space), be careful and try not to
-                  freeze your browser!
-                </p>
+                <span>The number of ships you want and its length (e.g. if you want 3 ships with 5 unit length then please input "5 5 5" in the field, separate with space).</span>
               </div>
+              <hr />
               <button type="submit" class="btn-13 submit-form" data-submit-form><span>Submit</span></button>
               <button type="button" class="btn-13 close-form" data-close-form><span>Close</span></button>
             </form>
