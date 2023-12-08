@@ -230,8 +230,10 @@ export class DOM {
 
           if (Game.isOver) return;
 
+          // if difficulty is 3 then there's a chance the AI will shot 1 or 2 or 3 times in a row etc. 0 exclude
+          const criticalDamage = Math.floor(Math.random() * _DIFFICULTY) + 1;
           // ai play its turn base on difficulty
-          for (let i = 0; i < _DIFFICULTY; i++) {
+          for (let i = 0; i < criticalDamage; i++) {
             Game.aiPlayOneTurn(human, ai);
           }
         },
