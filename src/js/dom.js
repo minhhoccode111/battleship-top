@@ -11,6 +11,8 @@ export let _TOTAL_SHIPS = [1, 1, 1, 2, 2, 3, 3, 4, 5]; // total of ships we want
 
 export let _SHIPS_MAX_LENGTH = 9;
 
+export let _DIFFICULTY = 1;
+
 export class Game {
   static changeSize = (newSize) => {
     _SIZE = newSize;
@@ -19,6 +21,8 @@ export class Game {
 
     DOM.gameboardHuman.style.cssText = `grid-template: repeat(${_SIZE}, 1fr) / repeat(${_SIZE}, 1fr)`;
   };
+
+  static changeDifficulty = (newDifficulty) => (_DIFFICULTY = newDifficulty);
 
   static changeTotalShips = (newShips) => (_TOTAL_SHIPS = newShips);
 
@@ -147,6 +151,8 @@ export class DOM {
 
   static inputShips = document.querySelector(`[data-form-input-ships]`);
 
+  static inputsDifficulty = document.querySelectorAll('[name="difficulty"]');
+
   static #showPopupForm = () => this.popupFormCtn.classList.remove('hide');
 
   static #hidePopupForm = () => this.popupFormCtn.classList.add('hide');
@@ -167,6 +173,12 @@ export class DOM {
     this.popupForm.addEventListener('submit', (e) => {
       e.preventDefault();
 
+      let difficulty = 1;
+
+      this.inputsDifficulty.forEach((input) => {
+        if (input.checked) difficulty = input.value;
+      });
+
       const inputSizeValue = +this.inputSize.value;
 
       const inputShipsValue = this.inputShips.value
@@ -175,6 +187,8 @@ export class DOM {
         .split(/\s*/)
 
         .reduce((total, current) => (+current > 0 ? [...total, +current] : total), []);
+
+      Game.changeDifficulty(difficulty);
 
       Game.changeSize(inputSizeValue);
 
@@ -216,8 +230,10 @@ export class DOM {
 
           if (Game.isOver) return;
 
-          // ai play its turn
-          Game.aiPlayOneTurn(human, ai);
+          // ai play its turn base on difficulty
+          for (let i = 0; i < _DIFFICULTY; i++) {
+            Game.aiPlayOneTurn(human, ai);
+          }
         },
 
         { once: true }

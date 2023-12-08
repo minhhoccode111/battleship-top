@@ -15,7 +15,8 @@ module.exports = {
       title: "Captain's Conquest: Battleship Duel",
       filename: 'index.html',
       template: 'src/template.html',
-      // favicon: 'src/assets/icon',
+      favicon: 'src/assets/favicon/favicon-32x32.png',
+      favicon: 'src/assets/favicon/favicon-16x16.png',
     }),
   ],
   output: {
