@@ -1,4 +1,4 @@
-import { Position, Human, Computer, Player } from './class';
+import { Position, Human, Computer, Player } from "./class";
 
 /**
  * @jest-environment jsdom
@@ -57,13 +57,23 @@ export class Game {
 
     Display.humanShips(this.human);
 
-    // Display.humanShips(this.ai); // FIXME used for display ai's ships, for testing
+    Display.shipsLeft(this.human, this.ai);
 
-    Display.message(this.human, `Press the restart button if`, `you're not happy with your ships layout`);
+    // Display.humanShips(this.ai); // NOTE: used for display ai's ships, for testing
 
-    Display.message(this.ai, `Keep track of game alert here`, `You will attack the gameboard above`);
+    Display.message(
+      this.human,
+      `Press the restart button if`,
+      `you're not happy with your ships layout`,
+    );
 
-    DOM.preventSpam.classList.add('hide');
+    Display.message(
+      this.ai,
+      `Keep track of game alert here`,
+      `You will attack the gameboard above`,
+    );
+
+    DOM.preventSpam.classList.add("hide");
 
     DOM.listenHumanAttacks(this.human, this.ai);
   };
@@ -73,25 +83,38 @@ export class Game {
 
     let humanMessage = `We shot at enemy's water and it's a miss`;
 
-    if (humanAttacksStatus.cellStatus === 'Hit') {
+    if (humanAttacksStatus.cellStatus === "Hit") {
       Display.aiDeathShips(ai);
 
       humanMessage = `We shot at enemy's water and it's a hit`;
 
-      if (humanAttacksStatus.shipStatus === 'Sunk') humanMessage += `, we have sunk their ship`;
+      if (humanAttacksStatus.shipStatus === "Sunk")
+        humanMessage += `, we have sunk their ship`;
     }
-    humanMessage = humanMessage.split(',');
+    humanMessage = humanMessage.split(",");
 
     Display.shotOnBoard(ai, position, humanAttacksStatus.cellStatus);
 
-    Display.message(ai, humanMessage[0], humanMessage[1] || '');
+    Display.message(ai, humanMessage[0], humanMessage[1] || "");
+
+    Display.shipsLeft(human, ai);
 
     if (this.checkGameover(ai)) {
       Display.stopUserSpamming();
 
-      Display.message(ai, `Congratulation!`, `We have win the battle!`, `Play again?`);
+      Display.message(
+        ai,
+        `Congratulation!`,
+        `We have win the battle!`,
+        `Play again?`,
+      );
 
-      Display.message(human, `Congratulation!`, `We have win the battle!`, `Play again?`);
+      Display.message(
+        human,
+        `Congratulation!`,
+        `We have win the battle!`,
+        `Play again?`,
+      );
     }
   };
 
@@ -100,26 +123,43 @@ export class Game {
 
     let aiMessage = `Enemy shot at our water and it's a miss`;
 
-    if (aiAttackResult.cellStatus === 'Hit') {
+    if (aiAttackResult.cellStatus === "Hit") {
       Display.humanShips(human);
 
       aiMessage = `Enemy shot at our water and it's a hit`;
 
-      if (aiAttackResult.shipStatus === 'Sunk') aiMessage += `, they have sunk our ship`;
+      if (aiAttackResult.shipStatus === "Sunk")
+        aiMessage += `, they have sunk our ship`;
     }
 
-    aiMessage = aiMessage.split(',');
+    aiMessage = aiMessage.split(",");
 
-    Display.shotOnBoard(human, aiAttackResult.position, aiAttackResult.cellStatus);
+    Display.shotOnBoard(
+      human,
+      aiAttackResult.position,
+      aiAttackResult.cellStatus,
+    );
 
     Display.message(human, `Enemy is aiming...`, aiMessage[0], aiMessage[1]);
+
+    Display.shipsLeft(human, ai);
 
     if (this.checkGameover(human)) {
       Display.stopUserSpamming();
 
-      Display.message(ai, `Oh noo...`, `Enemy has win the battle!`, `Play again?`);
+      Display.message(
+        ai,
+        `Oh noo...`,
+        `Enemy has win the battle!`,
+        `Play again?`,
+      );
 
-      Display.message(human, `Oh no...`, `Enemy has win the battle!`, `Play again?`);
+      Display.message(
+        human,
+        `Oh no...`,
+        `Enemy has win the battle!`,
+        `Play again?`,
+      );
     }
   };
 }
@@ -129,19 +169,23 @@ export class DOM {
 
   static messageAi = document.querySelector(`[data-message="ai"]`);
 
-  static gameboardHuman = document.querySelector('.gameboard[data-human]');
+  static shipsLeftHuman = document.querySelector(`[data-ships-left="human"]`);
 
-  static gameboardAi = document.querySelector('.gameboard[data-ai]');
+  static shipsLeftAi = document.querySelector(`[data-ships-left="ai"]`);
 
-  static restart = document.querySelector('[data-restart]');
+  static gameboardHuman = document.querySelector(".gameboard[data-human]");
 
-  static setting = document.querySelector('[data-setting]');
+  static gameboardAi = document.querySelector(".gameboard[data-ai]");
 
-  static preventSpam = document.querySelector('[data-prevent-spam]');
+  static restart = document.querySelector("[data-restart]");
 
-  static popupFormCtn = document.querySelector('[data-popup-form-ctn]');
+  static setting = document.querySelector("[data-setting]");
 
-  static popupForm = document.querySelector('[data-popup-form]');
+  static preventSpam = document.querySelector("[data-prevent-spam]");
+
+  static popupFormCtn = document.querySelector("[data-popup-form-ctn]");
+
+  static popupForm = document.querySelector("[data-popup-form]");
 
   static submitForm = document.querySelector(`[data-submit-form]`);
 
@@ -153,24 +197,24 @@ export class DOM {
 
   static inputsDifficulty = document.querySelectorAll('[name="difficulty"]');
 
-  static #showPopupForm = () => this.popupFormCtn.classList.remove('hide');
+  static #showPopupForm = () => this.popupFormCtn.classList.remove("hide");
 
-  static #hidePopupForm = () => this.popupFormCtn.classList.add('hide');
+  static #hidePopupForm = () => this.popupFormCtn.classList.add("hide");
 
   static listenRestart = () => {
-    this.restart.addEventListener('click', (e) => {
+    this.restart.addEventListener("click", (e) => {
       Game.start();
     });
   };
 
   static listenSetting = () => {
-    this.setting.addEventListener('click', (e) => {
+    this.setting.addEventListener("click", (e) => {
       this.#showPopupForm();
     });
   };
 
   static listenSubmitForm = () => {
-    this.popupForm.addEventListener('submit', (e) => {
+    this.popupForm.addEventListener("submit", (e) => {
       e.preventDefault();
 
       let difficulty = 1;
@@ -183,10 +227,11 @@ export class DOM {
 
       const inputShipsValue = this.inputShips.value
         .trim()
-
         .split(/\s*/)
-
-        .reduce((total, current) => (+current > 0 ? [...total, +current] : total), []);
+        .reduce(
+          (total, current) => (+current > 0 ? [...total, +current] : total),
+          [],
+        );
 
       Game.changeDifficulty(difficulty);
 
@@ -201,24 +246,24 @@ export class DOM {
   };
 
   static listenCloseForm = () => {
-    this.closeForm.addEventListener('click', (e) => {
+    this.closeForm.addEventListener("click", (e) => {
       this.#hidePopupForm();
     });
   };
 
   static listenHumanAttacks = (human, ai) => {
-    if (!(human instanceof Human)) throw new Error('Invalid Human');
+    if (!(human instanceof Human)) throw new Error("Invalid Human");
 
-    if (!(ai instanceof Computer)) throw new Error('Invalid Ai');
+    if (!(ai instanceof Computer)) throw new Error("Invalid Ai");
 
-    const cells = this.gameboardAi.querySelectorAll('.ai__cell');
+    const cells = this.gameboardAi.querySelectorAll(".ai__cell");
 
     cells.forEach((cell) => {
       cell.addEventListener(
-        'click',
+        "click",
 
         (e) => {
-          e.target.classList.add('attacked');
+          e.target.classList.add("attacked");
 
           const row = +e.target.dataset.row;
 
@@ -238,14 +283,14 @@ export class DOM {
           }
         },
 
-        { once: true }
+        { once: true },
       );
     });
   };
 }
 
 class Display {
-  static message = (player, content0, content1 = '', content2 = '') => {
+  static message = (player, content0, content1 = "", content2 = "") => {
     let targetMessage;
 
     if (player instanceof Human) targetMessage = DOM.messageHuman;
@@ -254,20 +299,37 @@ class Display {
     targetMessage.innerHTML = `<p>${content0}</p><p>${content1}</p><p>${content2}</p>`;
   };
 
+  static shipsLeft = (human, ai) => {
+    if (!(human instanceof Human)) throw new Error("Invalid Human");
+    if (!(ai instanceof Computer)) throw new Error("Invalid Computer");
+
+    const humanShipsLeft =
+      human.board.ships.healthy.length + human.board.ships.warning.length;
+    const aiShipsLeft =
+      ai.board.ships.healthy.length + ai.board.ships.warning.length;
+
+    console.log(`human ships left belike: `, humanShipsLeft);
+    console.log(`ai ships left belike: `, aiShipsLeft);
+
+    DOM.shipsLeftHuman.innerHTML = humanShipsLeft;
+    DOM.shipsLeftAi.innerHTML = aiShipsLeft;
+  };
+
   static board = (player) => {
-    if (!(player instanceof Player)) throw new Error('Invalid Player');
+    if (!(player instanceof Player)) throw new Error("Invalid Player");
 
-    const targetBoard = player instanceof Human ? DOM.gameboardHuman : DOM.gameboardAi;
+    const targetBoard =
+      player instanceof Human ? DOM.gameboardHuman : DOM.gameboardAi;
 
-    targetBoard.innerHTML = '';
+    targetBoard.innerHTML = "";
 
-    const type = player instanceof Human ? 'human' : 'ai';
+    const type = player instanceof Human ? "human" : "ai";
 
     for (let i = 0; i < _SIZE; i++) {
       for (let j = 0; j < _SIZE; j++) {
-        const div = document.createElement('div');
+        const div = document.createElement("div");
 
-        div.classList.add('center');
+        div.classList.add("center");
 
         div.classList.add(`${type}__cell`);
 
@@ -281,7 +343,7 @@ class Display {
   };
 
   static humanShips = (player) => {
-    if (!(player instanceof Player)) throw new Error('Invalid Player');
+    if (!(player instanceof Player)) throw new Error("Invalid Player");
 
     const ships = player.board.ships;
 
@@ -304,29 +366,37 @@ class Display {
           const { row, col } = currentLocation;
 
           // select exact cell dom element
-          const cell = player instanceof Human ? DOM.gameboardHuman.querySelector(`[data-row="${row}"][data-col="${col}"]`) : DOM.gameboardAi.querySelector(`[data-row="${row}"][data-col="${col}"]`);
+          const cell =
+            player instanceof Human
+              ? DOM.gameboardHuman.querySelector(
+                  `[data-row="${row}"][data-col="${col}"]`,
+                )
+              : // for testing purpose
+                DOM.gameboardAi.querySelector(
+                  `[data-row="${row}"][data-col="${col}"]`,
+                );
 
           cell.classList.add(shipType);
 
           if (locations.length === 1) {
-            cell.classList.add('ship__one__length');
+            cell.classList.add("ship__one__length");
 
             continue;
           }
 
-          if (isVertical) cell.classList.add('vertical');
-          else cell.classList.add('horizon');
+          if (isVertical) cell.classList.add("vertical");
+          else cell.classList.add("horizon");
 
-          if (!j) cell.classList.add('ship__head');
-          else if (j === locations.length - 1) cell.classList.add('ship__tail');
-          else cell.classList.add('ship__body');
+          if (!j) cell.classList.add("ship__head");
+          else if (j === locations.length - 1) cell.classList.add("ship__tail");
+          else cell.classList.add("ship__body");
         }
       }
     }
   };
 
   static aiDeathShips = (player) => {
-    if (!(player instanceof Player)) throw new Error('Invalid Player');
+    if (!(player instanceof Player)) throw new Error("Invalid Player");
 
     const deathShips = player.board.ships.death;
 
@@ -342,28 +412,31 @@ class Display {
 
         const { row, col } = currentLocation;
 
-        const cell = DOM.gameboardAi.querySelector(`[data-row="${row}"][data-col="${col}"]`);
+        const cell = DOM.gameboardAi.querySelector(
+          `[data-row="${row}"][data-col="${col}"]`,
+        );
 
-        cell.classList.add('death');
+        cell.classList.add("death");
 
         if (locations.length === 1) {
-          cell.classList.add('ship__one__length');
+          cell.classList.add("ship__one__length");
 
           continue;
         }
 
-        if (isVertical) cell.classList.add('vertical');
-        else cell.classList.add('horizon');
+        if (isVertical) cell.classList.add("vertical");
+        else cell.classList.add("horizon");
 
-        if (!j) cell.classList.add('ship__head');
-        else if (j === locations.length - 1) cell.classList.add('ship__tail');
-        else cell.classList.add('ship__body');
+        if (!j) cell.classList.add("ship__head");
+        else if (j === locations.length - 1) cell.classList.add("ship__tail");
+        else cell.classList.add("ship__body");
       }
     }
   };
 
   static shotOnBoard = (player, position, status) => {
-    if (!(position instanceof Position) || !(player instanceof Player)) throw new Error('Invalid argument');
+    if (!(position instanceof Position) || !(player instanceof Player))
+      throw new Error("Invalid argument");
 
     const { row, col } = position;
 
@@ -372,17 +445,19 @@ class Display {
     if (player instanceof Human) gameboard = DOM.gameboardHuman;
     else gameboard = DOM.gameboardAi;
 
-    const cell = gameboard.querySelector(`[data-col="${col}"][data-row="${row}"]`);
+    const cell = gameboard.querySelector(
+      `[data-col="${col}"][data-row="${row}"]`,
+    );
 
-    const span = document.createElement('span');
+    const span = document.createElement("span");
 
-    if (status === 'Hit') span.classList.add('hit__shot');
-    else span.classList.add('miss__shot');
+    if (status === "Hit") span.classList.add("hit__shot");
+    else span.classList.add("miss__shot");
 
     cell.appendChild(span);
   };
 
   static stopUserSpamming = () => {
-    DOM.preventSpam.classList.remove('hide');
+    DOM.preventSpam.classList.remove("hide");
   };
 }

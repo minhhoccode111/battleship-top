@@ -1,11 +1,25 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/src/assets/favicon/apple-touch-icon.png" />
-    <link rel="icon" type="image/png" sizes="32x32" href="/src/assets/favicon/favicon-32x32.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="/src/assets/favicon/favicon-16x16.png" />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="/src/assets/favicon/apple-touch-icon.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="/src/assets/favicon/favicon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="/src/assets/favicon/favicon-16x16.png"
+    />
 
     <link rel="manifest" href="/src/assets/favicon/site.webmanifest" />
     <title>Battleship</title>
@@ -16,16 +30,27 @@
         <div class="header__icon__ctn">
           <div class="header__icon"></div>
         </div>
-        <div class="header__title__ctn"><h1 class="header__title">battleship</h1></div>
+        <div class="header__title__ctn">
+          <h1 class="header__title">battleship</h1>
+        </div>
         <p class="header__link__ctn">
-          <a href="https://github.com/minhhoccode111/battleship-top" class="header__link">
-            <button type="button" class="btn-13"><span>view on Github</span></button>
+          <a
+            href="https://github.com/minhhoccode111/battleship-top"
+            class="header__link"
+          >
+            <button type="button" class="btn-13">
+              <span>view on Github</span>
+            </button>
           </a>
         </p>
       </header>
       <nav id="nav" class="nav center">
-        <button type="button" class="btn-13" data-restart><span>Restart</span></button>
-        <button type="button" class="btn-13" data-setting><span>Setting</span></button>
+        <button type="button" class="btn-13" data-restart>
+          <span>Restart</span>
+        </button>
+        <button type="button" class="btn-13" data-setting>
+          <span>Setting</span>
+        </button>
         <div class="popup-form-ctn center hide" data-popup-form-ctn>
           <header class="popup-form-title-ctn">
             <h2 class="popup-form-title">Setting</h2>
@@ -34,8 +59,12 @@
             <p><u>Warning:</u></p>
             <p><u>PLEASE DON'T TRY TO BREAK THIS GAME.</u></p>
             <p>
-              It will continuously loop and try to place all ships randomly on each player's gameboard, if you input something not meet the logic (e.g. you try to place a ship 5 unit length in a 4*4
-              size gameboard, or you try to place 5 ships 1 unit length in a 2*2 size gameboard ...etc), then you will have infinite loop and your browser will be frozen.
+              It will continuously loop and try to place all ships randomly on
+              each player's gameboard, if you input something not meet the logic
+              (e.g. you try to place a ship 5 unit length in a 4*4 size
+              gameboard, or you try to place 5 ships 1 unit length in a 2*2 size
+              gameboard ...etc), then you will have infinite loop and your
+              browser will be frozen.
             </p>
             <p>Good luck. Have fun. Don't freeze!</p>
           </div>
@@ -65,15 +94,31 @@
               <div class="form-input-ctn">
                 <span>Difficulty:*</span>
                 <label>
-                  <input type="radio" name="difficulty" value="1" checked title="Normal mode" />
+                  <input
+                    type="radio"
+                    name="difficulty"
+                    value="1"
+                    checked
+                    title="Normal mode"
+                  />
                   Normal
                 </label>
                 <label>
-                  <input type="radio" name="difficulty" value="2" title="Hard mode" />
+                  <input
+                    type="radio"
+                    name="difficulty"
+                    value="2"
+                    title="Hard mode"
+                  />
                   Hard
                 </label>
                 <label>
-                  <input type="radio" name="difficulty" value="3" title="Unbeatable mode" />
+                  <input
+                    type="radio"
+                    name="difficulty"
+                    value="3"
+                    title="Unbeatable mode"
+                  />
                   Unbeatable
                 </label>
               </div>
@@ -92,22 +137,50 @@
                     title="Please enter numbers from 1 to 9 separate with space. example: 1 2 3 4 5"
                   />
                 </label>
-                <span>The number of ships you want and its length (e.g. if you want 3 ships with 5 unit length then please input "5 5 5" in the field, separate with space).</span>
+                <span
+                  >The number of ships you want and its length (e.g. if you want
+                  3 ships with 5 unit length then please input "5 5 5" in the
+                  field, separate with space).</span
+                >
               </div>
               <hr />
-              <button type="submit" class="btn-13 submit-form" data-submit-form><span>Submit</span></button>
-              <button type="button" class="btn-13 close-form" data-close-form><span>Close</span></button>
+
+              <p class=""><u>Note:</u></p>
+              <p class="">Green: ship is healthy</p>
+              <p class="">Yellow: ship is oneshot</p>
+              <p class="">Red: ship is dead</p>
+
+              <hr />
+              <p>
+                If you're not happy with the ship layout, press "restart" button
+                to reset.
+              </p>
+              <hr />
+              <button type="submit" class="btn-13 submit-form" data-submit-form>
+                <span>Submit</span>
+              </button>
+              <button type="button" class="btn-13 close-form" data-close-form>
+                <span>Close</span>
+              </button>
             </form>
           </div>
         </div>
       </nav>
       <main class="main" id="main">
         <div class="gameboard__ctn__ctn">
-          <h2 class="gameboard__header">FRIENDLY WATERS</h2>
+          <h2 class="gameboard__header">OUR WATERS</h2>
           <div class="gameboard__ctn center">
             <div class="gameboard" data-human></div>
           </div>
-          <div class="display__message" data-message="human">alert something</div>
+          <div class="display__ships__left">
+            <p class="">
+              Ships left:
+              <span class="" data-ships-left="human">6</span>
+            </p>
+          </div>
+          <div class="display__message" data-message="human">
+            alert something
+          </div>
         </div>
         <div class="gameboard__ctn__ctn">
           <h2 class="gameboard__header">ENEMY WATERS</h2>
@@ -115,12 +188,23 @@
             <div class="gameboard" data-ai></div>
             <div class="hide" data-prevent-spam></div>
           </div>
+          <div class="display__ships__left">
+            <p class="">
+              Ships left:
+              <span class="" data-ships-left="ai">6</span>
+            </p>
+          </div>
           <div class="display__message" data-message="ai">alert something</div>
         </div>
       </main>
       <footer class="footer center" id="footer">
         <div class="footer__link__ctn">
-          <p>Made with love by <a href="https://github.com/minhhoccode111" class="footer__link">minhhoccode111</a></p>
+          <p>
+            Made by
+            <a href="https://github.com/minhhoccode111" class="footer__link"
+              >minhhoccode111</a
+            >
+          </p>
         </div>
       </footer>
     </div>

@@ -14,8 +14,21 @@
   background-color: #000;
   background-image: none;
   color: #ff0000;
-  cursor: pointer;
-  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol,
+  cursor: crosshair;
+  font-family:
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    Segoe UI,
+    Roboto,
+    Helvetica Neue,
+    Arial,
+    Noto Sans,
+    sans-serif,
+    Apple Color Emoji,
+    Segoe UI Emoji,
+    Segoe UI Symbol,
     Noto Color Emoji;
   font-size: 100%;
   font-weight: 900;
@@ -77,13 +90,20 @@
     0 100%,
     0 calc(100% - var(--progress, 0%) / 2)
   );
-  content: '';
+  content: "";
   inset: 0;
   position: absolute;
   transform: translateX(calc(100% - var(--progress, 0%) / 1.99));
-  transition: transform 0.2s ease, -webkit-clip-path 0.2s ease;
-  transition: clip-path 0.2s ease, transform 0.2s ease;
-  transition: clip-path 0.2s ease, transform 0.2s ease, -webkit-clip-path 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    -webkit-clip-path 0.2s ease;
+  transition:
+    clip-path 0.2s ease,
+    transform 0.2s ease;
+  transition:
+    clip-path 0.2s ease,
+    transform 0.2s ease,
+    -webkit-clip-path 0.2s ease;
 }
 .btn-13:after {
   transform: translateX(calc(-100% + var(--progress, 0%) / 1.99));

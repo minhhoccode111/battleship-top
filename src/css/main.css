@@ -18,6 +18,12 @@
   white-space: nowrap;
 }
 
+.display__ships__left {
+  text-align: center;
+  padding-top: 1rem;
+  white-space: nowrap;
+}
+
 .gameboard {
   border: 1px solid red;
   display: grid;
@@ -28,7 +34,7 @@
   height: calc(50vw - 1.6rem);
   max-width: 50rem;
   max-height: 50rem;
-  background: url('./../assets/img/battleship.png') center/cover no-repeat red;
+  background: url("./../assets/img/battleship.png") center/cover no-repeat red;
 }
 
 .gameboard > div {
@@ -56,7 +62,7 @@
 }
 
 .gameboard .ai__cell {
-  cursor: cell;
+  cursor: crosshair;
 }
 
 .gameboard .ai__cell:hover {
@@ -114,15 +120,15 @@
 
 .display__message {
   border: 2px dotted red;
-  border-radius: 99rem;
-  padding: 2rem;
+  /* border-radius: 99rem; */
+  padding: 1rem;
   text-align: center;
   margin: 2rem 0;
   max-width: 50rem;
 }
 
 .display__message p {
-  margin: 0 0 1rem;
+  margin: 0 0 0.4rem;
 }
 
 .gameboard__ctn {

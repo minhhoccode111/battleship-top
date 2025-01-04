@@ -1,8 +1,9 @@
-import { _SIZE, _TOTAL_SHIPS, _SHIPS_MAX_LENGTH, Game } from './dom';
+import { _SIZE, _TOTAL_SHIPS, _SHIPS_MAX_LENGTH, Game } from "./dom";
 
 export class Ship {
   constructor(len = 3) {
-    if (len > _SHIPS_MAX_LENGTH || len < 1) throw new Error('Invalid ship length');
+    if (len > _SHIPS_MAX_LENGTH || len < 1)
+      throw new Error("Invalid ship length");
 
     let _hits = 0;
 
@@ -40,7 +41,8 @@ export class Position {
   constructor(row, col) {
     const _legit = _SIZE - 1;
 
-    if (row > _legit || col > _legit || row < 0 || col < 0) throw new Error('Position is not legit');
+    if (row > _legit || col > _legit || row < 0 || col < 0)
+      throw new Error("Position is not legit");
 
     Object.defineProperties(this, {
       row: {
@@ -67,7 +69,7 @@ export class Cell {
     Object.defineProperties(this, {
       receivedAttack: {
         value: function () {
-          if (_isReceivedAttack) throw new Error('Already attacked this cell');
+          if (_isReceivedAttack) throw new Error("Already attacked this cell");
 
           _isReceivedAttack = true;
 
@@ -91,7 +93,7 @@ export class Cell {
         },
 
         set(newShip) {
-          if (_ship) throw new Error('Already placed a ship on this cell');
+          if (_ship) throw new Error("Already placed a ship on this cell");
 
           _ship = newShip;
         },
@@ -99,11 +101,11 @@ export class Cell {
 
       status: {
         get() {
-          if (!_isReceivedAttack) return 'Not yet';
+          if (!_isReceivedAttack) return "Not yet";
 
-          if (_ship) return 'Hit';
+          if (_ship) return "Hit";
 
-          return 'Miss';
+          return "Miss";
         },
       },
     });
@@ -140,32 +142,36 @@ export class Gameboard {
 
               const shipHealth = currentShip.length - currentShip.hits;
 
-              if (shipHealth === 0) shipStatus = 'death';
-              else if (shipHealth === 1) shipStatus = 'warning';
-              else shipStatus = 'healthy';
+              if (shipHealth === 0) shipStatus = "death";
+              else if (shipHealth === 1) shipStatus = "warning";
+              else shipStatus = "healthy";
 
               total[shipStatus].push(currentShipInfo);
 
               return total;
             },
-            { healthy: [], death: [], warning: [] }
+            { healthy: [], death: [], warning: [] },
           );
         },
       },
 
       placeShips: {
         value: function (ship, startPosition, isVertical) {
-          if (!(ship instanceof Ship)) throw new Error('Invalid ship object');
+          if (!(ship instanceof Ship)) throw new Error("Invalid ship object");
 
-          if (!(startPosition instanceof Position)) throw new Error('Invalid start position');
+          if (!(startPosition instanceof Position))
+            throw new Error("Invalid start position");
 
-          if (typeof isVertical !== 'boolean') throw new Error('Invalid direction');
+          if (typeof isVertical !== "boolean")
+            throw new Error("Invalid direction");
 
           const length = ship.length;
 
-          const endPosition = length + (isVertical ? startPosition.col : startPosition.row); // used to check if outside the gameboard
+          const endPosition =
+            length + (isVertical ? startPosition.col : startPosition.row); // used to check if outside the gameboard
 
-          if (endPosition > _SIZE) throw new Error('This ship goes beyond gameboard');
+          if (endPosition > _SIZE)
+            throw new Error("This ship goes beyond gameboard");
 
           let { row, col } = startPosition;
 
@@ -178,7 +184,10 @@ export class Gameboard {
             const cell = this.board[row][col];
 
             // throw and cancel place ship process if a cell already has ship on it
-            if (cell.ship !== null) throw new Error('Place ship cancel because this cell already has a ship on it');
+            if (cell.ship !== null)
+              throw new Error(
+                "Place ship cancel because this cell already has a ship on it",
+              );
 
             // save cells which is legit to use later
             cells.push(cell);
@@ -200,7 +209,8 @@ export class Gameboard {
 
       receivedAttack: {
         value: function (position) {
-          if (!(position instanceof Position)) throw new Error('Invalid position');
+          if (!(position instanceof Position))
+            throw new Error("Invalid position");
 
           const { row, col } = position;
 
@@ -210,11 +220,11 @@ export class Gameboard {
 
           const cellStatus = cell.status;
 
-          const shipStatus = cell.ship?.isSunk ? 'Sunk' : 'Not sunk';
+          const shipStatus = cell.ship?.isSunk ? "Sunk" : "Not sunk";
 
-          if (cellStatus === 'Hit') this.hitShots.push(position);
+          if (cellStatus === "Hit") this.hitShots.push(position);
 
-          if (cellStatus === 'Miss') this.missShots.push(position);
+          if (cellStatus === "Miss") this.missShots.push(position);
 
           this.shots.push(position);
 
@@ -272,7 +282,11 @@ export class Human extends Player {
     Object.defineProperties(this, {
       attack: {
         value: function (position, player) {
-          if (!(position instanceof Position) || !(player.board instanceof Gameboard)) throw new Error('Invalid arguments');
+          if (
+            !(position instanceof Position) ||
+            !(player.board instanceof Gameboard)
+          )
+            throw new Error("Invalid arguments");
 
           const status = player.board.receivedAttack(position);
 
@@ -288,7 +302,8 @@ export class Computer extends Player {
     super();
 
     const _randomAttack = (player) => {
-      if (!(player.board instanceof Gameboard)) throw new Error('Invalid board');
+      if (!(player.board instanceof Gameboard))
+        throw new Error("Invalid board");
 
       const length = player.board.shots.length;
 
@@ -319,6 +334,7 @@ export class Computer extends Player {
       right: { moveRow: 0, moveCol: 1 },
     };
 
+    // smart attack algorithm
     this.attack = (player) => {
       const board = player.board.board;
 
@@ -326,7 +342,8 @@ export class Computer extends Player {
 
       board.forEach((row) => {
         row.forEach((cell) => {
-          if (cell.status === 'Hit' && !cell.ship.isSunk) notSunkCells.push(cell);
+          if (cell.status === "Hit" && !cell.ship.isSunk)
+            notSunkCells.push(cell);
         });
       });
 
@@ -347,7 +364,7 @@ export class Computer extends Player {
           let nextCell = board[nextCellRow][nextCellCol];
 
           while (nextCell) {
-            if (nextCell.status === 'Hit' && !nextCell.ship.isSunk) {
+            if (nextCell.status === "Hit" && !nextCell.ship.isSunk) {
               // keep getting next cell of that direction
               nextCellRow += moveRow;
 
@@ -361,7 +378,7 @@ export class Computer extends Player {
             }
 
             // save nextCell if has not been hit yet
-            if (nextCell.status === 'Not yet') possibleCells.push(nextCell);
+            if (nextCell.status === "Not yet") possibleCells.push(nextCell);
 
             break;
           }
